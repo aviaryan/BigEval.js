@@ -55,8 +55,7 @@ BigEval.prototype.solve = function(s){
 		return this.errMsg = this.errIC;
 	}
 
-	if ( fc != '-' && fc != '+' )
-		s = '+' + s;
+	s = this.addPlusSign(s);
 	var ob = s.indexOf('('), cb;
 
 	// if bracket present, work on them
@@ -93,7 +92,8 @@ BigEval.prototype.solve = function(s){
 		while (p > 0){ // the first is sign, no need to take that
 			bp = s.slice(0,p).match(/[\-\+\*\\\/]*[a-z0-9\.]+$/i);
 			ap = s.slice(p+1).match(/[\-\+]?[a-z0-9\.]+/i);
-			if (!isAddOn)
+
+			if (!isAddOn) // no need for it when only +- signs exist
 				bp[0] = bp[0].slice(1);
 
 			if (c == '!'){
@@ -110,9 +110,7 @@ BigEval.prototype.solve = function(s){
 				else if (c == '^')
 					seg = this.pow( bp[0] , ap[0] );
 
-				seg += ""; // force string
-				if (seg.charAt(0) != '-' && seg.charAt(0) != '+')
-					seg = '+' + seg;
+				seg = this.addPlusSign(seg + "");
 				s = s.slice(0, p-bp[0].length) + seg + s.slice(p+ap[0].length+1);
 			}
 			p = s.indexOf(c, 1);
@@ -120,8 +118,7 @@ BigEval.prototype.solve = function(s){
 		}
 	}
 
-	if (s.charAt(0) != '-' && s.charAt(0) != '+')
-		s = '+' + s;
+	s = this.addPlusSign(s);
 	return s;
 };
 
@@ -149,7 +146,13 @@ BigEval.prototype.validate = function(){
 
 BigEval.prototype.plusMinus = function(s){
 	return s.replace(/\+\+/g, '+').replace(/\+\-/g, '-').replace(/\-\+/g, '-').replace(/\-\-/g, '+');
-}
+};
+
+BigEval.prototype.addPlusSign = function(s){
+	if (s.charAt(0) != '-' && s.charAt(0) != '+')
+		s = '+' + s;
+	return s;
+};
 
 BigEval.prototype.makeError = function(msg){
 	this.err = 1;
