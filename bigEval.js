@@ -77,7 +77,7 @@ bigEval.prototype.solve = function(s){
 	// solve expression (no brackets exist)
 	var p, bp, ap, seg, c;
 	for (var i = 0; i < this.order.length; i++){
-		p = s.indexOf(c = this.order[i]);
+		p = s.indexOf(c = this.order[i], 1);
 		while (p > 0){ // the first is sign, no need to take that
 			bp = s.slice(0,p).match(/[-]?[a-z0-9\.]+$/i);
 			ap = s.slice(p+1).match(/[\-\+]?[a-z0-9\.]+/i);
@@ -96,7 +96,7 @@ bigEval.prototype.solve = function(s){
 
 				s = s.slice(0, p-bp[0].length) + seg + s.slice(p+ap[0].length+1);
 			}
-			p = s.indexOf(c);
+			p = s.indexOf(c, 1);
 		}
 	}
 
