@@ -32,13 +32,13 @@ BigEval.prototype.exec = function(s){
 	}
 
 	// validate missing operand
-	var misOperands = /[\+\-\\\/\*\^][ \t]*([\+\-\\\/\*\^\!\)]|$)/g;
+	var misOperands = /[\+\-\\\/\*\^][ \t]*([\\\/\*\^\!\)]|$)/g;
 	if (misOperands.exec(s)){
 		this.err = 1;
 		return this.errMsg = this.errMN + misOperands.lastIndex;
 	}
 
-	s = s.replace(/[ \t]/g, '');
+	s = this.plusMinus( s.replace(/[ \t]/g, '') );
 
 	return this.solve(s);
 };
@@ -77,9 +77,14 @@ BigEval.prototype.solve = function(s){
 	// solve expression (no brackets exist)
 	var p, bp, ap, seg, c;
 	for (var i = 0; i < this.order.length; i++){
-		p = s.indexOf(c = this.order[i], 1);
+
+		c = this.order[i];
+		if (c == '+') // resolve +- made due to bracket solving
+			s = this.plusMinus(s);
+
+		p = s.indexOf(c, 1);
 		while (p > 0){ // the first is sign, no need to take that
-			bp = s.slice(0,p).match(/[-]?[a-z0-9\.]+$/i);
+			bp = s.slice(0,p).match(/[\-]?[a-z0-9\.]+$/i);
 			ap = s.slice(p+1).match(/[\-\+]?[a-z0-9\.]+/i);
 
 			if (c == '!'){
@@ -93,6 +98,8 @@ BigEval.prototype.solve = function(s){
 					seg = this.add( bp[0] , ap[0] );
 				else if (c == '-')
 					seg = this.add( bp[0] , '-' + ap[0] );
+				else if (c == '^')
+					seg = this.pow( bp[0] , ap[0] );
 
 				s = s.slice(0, p-bp[0].length) + seg + s.slice(p+ap[0].length+1);
 			}
@@ -114,7 +121,7 @@ BigEval.prototype.validate = function(){
 			if (stack.length > 0)
 				stack.pop();
 			else {
-				this.makeError(this.errBS);
+				this.makeError(this.errBR);
 				break;
 			}
 		}
@@ -122,12 +129,16 @@ BigEval.prototype.validate = function(){
 
 	if (this.err == 0)
 		if (stack.length != 0)
-			this.makeError(this.errBS);
+			this.makeError(this.errBR);
 };
+
+BigEval.prototype.plusMinus = function(s){
+	return s.replace(/\+\+/g, '+').replace(/\+\-/g, '-').replace(/\-\+/g, '-').replace(/\-\-/g, '+');
+}
 
 BigEval.prototype.makeError = function(msg){
 	this.err = 1;
-	this.errMsg += msg + " ";
+	this.errMsg = msg;
 };
 
 
