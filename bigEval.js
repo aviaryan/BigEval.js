@@ -3,20 +3,6 @@
 	by Avi Aryan
 */
 
-var bigEval_add = function(a, b){ 
-	return Number(a)+Number(b); 
-};
-
-var bigEval_mult = function(a, b){
-	return Number(a)*Number(b);
-};
-
-var bigEval_div = function(a, b){
-	return Number(a)/Number(b);
-};
-
-// so on
-
 function bigEval(){
 	this.err = 0;
 	this.errMsg = "";
@@ -25,7 +11,7 @@ function bigEval(){
 	this.errMN = "MISSING_OPERAND_AT_";
 	this.errIC = "INVALID_CHAR_AT_";
 
-	this.fChrRegex = /[a-z0-9\.\+\-\(]/i;
+	this.order = "!^\\/*+-";
 }
 
 bigEval.prototype.exec = function(s){
@@ -61,18 +47,59 @@ bigEval.prototype.solve = function(s){
 
 	// validate first char
 	var fc = s.charAt(0);
-	if (!fc.match(this.fChrRegex)){
+	if (!fc.match(/[a-z0-9\.\+\-\(]/i)){
 		this.err = 1;
 		return this.errMsg = this.errIC;
 	}
 
-	var ans = 0, pop;
+	var ob = s.indexOf('('), cb;
 
-	if (fc == '+' || fc == '-'){
-		s = s.slice(1);
+	// if bracket present, work on them
+	if (ob != -1){
+		var obct = 1;
+		for (var i = ob+1; i < s.length; i++){
+			if (s[i] == '(')
+				obct++;
+			else if (s[i] == ')'){
+				obct--;
+				if (obct == 0){
+					cb = i;
+					break;
+				}
+			}
+		}
+		s = s.slice(0, ob) + this.solve( s.slice(ob+1, cb) ) + s.slice(cb+1);
+		if (this.err)
+			return this.errMsg;
 	}
 
-	return ans;
+	// solve expression (no brackets exist)
+	var p, bp, ap, seg, c;
+	for (var i = 0; i < this.order.length; i++){
+		p = s.indexOf(c = this.order[i]);
+		while (p > 0){ // the first is sign, no need to take that
+			bp = s.slice(0,p).match(/[-]?[a-z0-9\.]+$/i);
+			ap = s.slice(p+1).match(/[\-\+]?[a-z0-9\.]+/i);
+
+			if (c == '!'){
+
+			} else {
+				if (c == '/' || c == '\\')
+					seg = this.div( bp[0] , ap[0] );
+				else if (c == '*')
+					seg = this.mul( bp[0] , ap[0] );
+				else if (c == '+')
+					seg = this.add( bp[0] , ap[0] );
+				else if (c == '-')
+					seg = this.add( bp[0] , '-' + ap[0] );
+
+				s = s.slice(0, p-bp[0].length) + seg + s.slice(p+ap[0].length+1);
+			}
+			p = s.indexOf(c);
+		}
+	}
+
+	return s;
 };
 
 bigEval.prototype.validate = function(){
@@ -100,4 +127,23 @@ bigEval.prototype.validate = function(){
 bigEval.prototype.makeError = function(msg){
 	this.err = 1;
 	this.errMsg += msg + " ";
+};
+
+
+/******************
+*
+* FUNCTIONS BENEATH
+*
+*******************/
+
+bigEval.prototype.add = function(a, b){ 
+	return Number(a)+Number(b); 
+};
+
+bigEval.prototype.mul = function(a, b){
+	return Number(a)*Number(b);
+};
+
+bigEval.prototype.div = function(a, b){
+	return Number(a)/Number(b);
 };
