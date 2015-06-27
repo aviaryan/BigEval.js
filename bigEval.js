@@ -55,7 +55,7 @@ bigEval.prototype.solve = function(s){
 	var ob = s.indexOf('('), cb;
 
 	// if bracket present, work on them
-	if (ob != -1){
+	while (ob != -1){
 		var obct = 1;
 		for (var i = ob+1; i < s.length; i++){
 			if (s[i] == '(')
@@ -71,6 +71,7 @@ bigEval.prototype.solve = function(s){
 		s = s.slice(0, ob) + this.solve( s.slice(ob+1, cb) ) + s.slice(cb+1);
 		if (this.err)
 			return this.errMsg;
+		ob = s.indexOf('(');
 	}
 
 	// solve expression (no brackets exist)
