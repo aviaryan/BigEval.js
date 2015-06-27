@@ -1,9 +1,9 @@
 /*
-	bigEval.js v0.1
+	BigEval.js v0.1
 	by Avi Aryan
 */
 
-function bigEval(){
+function BigEval(){
 	this.err = 0;
 	this.errMsg = "";
 	this.errBR = "IMPROPER_BRACKETS";
@@ -14,7 +14,7 @@ function bigEval(){
 	this.order = "!^\\/*+-";
 }
 
-bigEval.prototype.exec = function(s){
+BigEval.prototype.exec = function(s){
 	this.err = 0;
 	this.errMsg = "";
 	this.str = s;
@@ -43,7 +43,7 @@ bigEval.prototype.exec = function(s){
 	return this.solve(s);
 };
 
-bigEval.prototype.solve = function(s){
+BigEval.prototype.solve = function(s){
 
 	// validate first char
 	var fc = s.charAt(0);
@@ -103,7 +103,7 @@ bigEval.prototype.solve = function(s){
 	return s;
 };
 
-bigEval.prototype.validate = function(){
+BigEval.prototype.validate = function(){
 	// checks expression for errors
 	var stack = [], err = 0;
 
@@ -125,7 +125,7 @@ bigEval.prototype.validate = function(){
 			this.makeError(this.errBS);
 };
 
-bigEval.prototype.makeError = function(msg){
+BigEval.prototype.makeError = function(msg){
 	this.err = 1;
 	this.errMsg += msg + " ";
 };
@@ -137,18 +137,18 @@ bigEval.prototype.makeError = function(msg){
 *
 *******************/
 
-bigEval.prototype.add = function(a, b){ 
+BigEval.prototype.add = function(a, b){ 
 	return Number(a)+Number(b); 
 };
 
-bigEval.prototype.mul = function(a, b){
+BigEval.prototype.mul = function(a, b){
 	return Number(a)*Number(b);
 };
 
-bigEval.prototype.div = function(a, b){
+BigEval.prototype.div = function(a, b){
 	return Number(a)/Number(b);
 };
 
-bigEval.prototype.pow = function(a, b){
+BigEval.prototype.pow = function(a, b){
 	return Math.pow(Number(a), Number(b));
 };
