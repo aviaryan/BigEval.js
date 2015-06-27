@@ -1,0 +1,32 @@
+<html>
+<head>
+	<title>BigEval test page</title>
+</head>
+
+<body>
+
+	<label for="exp">Input</label>
+	<input type="text" name="exp" id="exp" />
+	<p>
+		<button onclick="execute();">Submit</button>
+	</p>
+	<p>
+		<textarea id="output">nothing</textarea>
+	</p>
+	
+
+
+	<script src="bigEval.js"></script>
+
+	<script>
+		var exp = document.getElementById("exp");
+		var output = document.getElementById("output");
+		var be = new bigEval();
+
+		function execute(){
+			output.value = be.exec(exp.value);
+		}
+	</script>
+
+</body>
+</html>
