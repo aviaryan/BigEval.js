@@ -97,7 +97,10 @@ BigEval.prototype.solve = function(s){
 				bp[0] = bp[0].slice(1);
 
 			if (c == '!'){
-
+				if ( bp[0].charAt(0) == '+' || bp[0].charAt(0) == '-' )
+					bp[0] = bp[0].slice(1);
+				seg = this.fac( bp[0] ) + "";
+				ap = [""]; // to avoid NULL
 			} else {
 				if (c == '/' || c == '\\')
 					seg = this.div( bp[0] , ap[0] );
@@ -111,10 +114,10 @@ BigEval.prototype.solve = function(s){
 					seg = this.pow( bp[0] , ap[0] );
 
 				seg = this.addPlusSign(seg + "");
-				s = s.slice(0, p-bp[0].length) + seg + s.slice(p+ap[0].length+1);
 			}
+			s = s.slice(0, p-bp[0].length) + seg + s.slice(p+ap[0].length+1);
 			p = s.indexOf(c, 1);
-			alert(s);
+			//alert(s);
 		}
 	}
 
@@ -180,4 +183,12 @@ BigEval.prototype.div = function(a, b){
 
 BigEval.prototype.pow = function(a, b){
 	return Math.pow(Number(a), Number(b));
+};
+
+BigEval.prototype.fac = function(n){
+	var s = "1";
+	n = Number(n);
+	for (var i = 2; i <= n; i++)
+		s = this.mul(s, i);
+	return s;
 };
