@@ -148,3 +148,7 @@ bigEval.prototype.mul = function(a, b){
 bigEval.prototype.div = function(a, b){
 	return Number(a)/Number(b);
 };
+
+bigEval.prototype.pow = function(a, b){
+	return Math.pow(Number(a), Number(b));
+};
