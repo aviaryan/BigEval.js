@@ -4,15 +4,15 @@
 */
 
 var bigEval_add = function(a, b){ 
-	return a+b; 
+	return Number(a)+Number(b); 
 };
 
 var bigEval_mult = function(a, b){
-	return a*b;
+	return Number(a)*Number(b);
 };
 
 var bigEval_div = function(a, b){
-	return a/b;
+	return Number(a)/Number(b);
 };
 
 // so on
@@ -23,8 +23,9 @@ function bigEval(){
 	this.errBR = "IMPROPER_BRACKETS";
 	this.errMS = "MISSING_OPERATOR_AT_";
 	this.errMN = "MISSING_OPERAND_AT_";
+	this.errIC = "INVALID_CHAR_AT_";
 
-	this.fChrRegex = /[a-z0-9\.\+\-]/i;
+	this.fChrRegex = /[a-z0-9\.\+\-\(]/i;
 }
 
 bigEval.prototype.exec = function(s){
@@ -45,7 +46,7 @@ bigEval.prototype.exec = function(s){
 	}
 
 	// validate missing operand
-	var misOperands = /[\+\-\\\/\*\^][ \t]*[\+\-\\\/\*\^\!]/g;
+	var misOperands = /[\+\-\\\/\*\^][ \t]*([\+\-\\\/\*\^\!\)]|$)/g;
 	if (misOperands.exec(s)){
 		this.err = 1;
 		return this.errMsg = this.errMN + misOperands.lastIndex;
@@ -57,8 +58,19 @@ bigEval.prototype.exec = function(s){
 };
 
 bigEval.prototype.solve = function(s){
+
 	// validate first char
-	var ans;
+	var fc = s.charAt(0);
+	if (!fc.match(this.fChrRegex)){
+		this.err = 1;
+		return this.errMsg = this.errIC;
+	}
+
+	var ans = 0, pop;
+
+	if (fc == '+' || fc == '-'){
+		s = s.slice(1);
+	}
 
 	return ans;
 };
