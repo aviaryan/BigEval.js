@@ -12,6 +12,8 @@
 	</p>
 	<p>
 		<textarea id="output"></textarea>
+		<br>
+		<textarea id="evaloutput"></textarea>
 	</p>
 	
 
@@ -25,6 +27,7 @@
 
 		function execute(){
 			output.value = be.exec(exp.value);
+			evaloutput.value = eval(exp.value);
 		}
 	</script>
 

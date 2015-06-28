@@ -82,7 +82,6 @@ BigEval.prototype.solve = function(s){
 			freturn = this.solve( s.slice(ob+1, cb) );
 			freturn = this.solveFunc( freturn , fname[0] ) + '';
 			s = s.slice(0, ob-fname[0].length) + freturn + s.slice(cb+1);
-			console.log(s);
 		} else {
 			s = s.slice(0, ob) + this.solve( s.slice(ob+1, cb) ) + s.slice(cb+1);
 		}
@@ -108,9 +107,9 @@ BigEval.prototype.solve = function(s){
 
 		p = s.indexOf(c, 1);
 		while (p > 0){ // the first is sign, no need to take that
-			bp = s.slice(0,p).match(/[\-\+\*\\\/]*[a-z0-9\.(e\-)(e\+)]+$/i);
-			ap = s.slice(p+1).match(/[\-\+]?[a-z0-9\.(e\-)(e\+)]+/i);
-
+			bp = s.slice(0,p).match(/[\-\+\*\\\/]*(e\-|e\+|[a-z0-9\.])+$/i); // kepp e-,e+ before other regex to have it matched
+			ap = s.slice(p+1).match(/[\-\+]?(e\-|e\+|[a-z0-9\.])+/i);
+			
 			if (!isAddOn) // no need for it when only +- signs exist
 				bp[0] = bp[0].slice(1);
 			if (isAddOn) // +- only ignore 1e-7
@@ -141,7 +140,6 @@ BigEval.prototype.solve = function(s){
 			}
 			s = s.slice(0, p-bp[0].length) + seg + s.slice(p+ap[0].length+1);
 			p = s.indexOf(c, 1);
-			//alert(s);
 		}
 	}
 
