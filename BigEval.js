@@ -3,6 +3,7 @@
 	by Avi Aryan
 */
 
+
 function BigEval(){
 	this.err = 0;
 	this.errMsg = "";
@@ -10,9 +11,11 @@ function BigEval(){
 	this.errMS = "MISSING_OPERATOR_AT_";
 	this.errMN = "MISSING_OPERAND_AT_";
 	this.errIC = "INVALID_CHAR_AT_";
+	this.errFN = "INVALID_FUNCTION_";
 
 	this.order = "!^\\/*+-";
 }
+
 
 BigEval.prototype.exec = function(s){
 	this.err = 0;
@@ -25,7 +28,7 @@ BigEval.prototype.exec = function(s){
 		return this.errMsg;
 
 	// validate missing operator
-	var misOperator = /[a-z0-9]([ \t]+[a-z0-9\.]|[ \t]*\()/ig, p;
+	var misOperator = /[a-z0-9][ \t]+[a-z0-9\.]/ig, p;
 	if (misOperator.exec(s)){
 		this.err = 1;
 		return this.errMsg = this.errMS + misOperator.lastIndex;
@@ -46,6 +49,7 @@ BigEval.prototype.exec = function(s){
 	return s;
 };
 
+
 BigEval.prototype.solve = function(s){
 
 	// validate first char
@@ -56,7 +60,7 @@ BigEval.prototype.solve = function(s){
 	}
 
 	s = this.addPlusSign(s);
-	var ob = s.indexOf('('), cb;
+	var ob = s.indexOf('('), cb, fname, freturn;
 
 	// if bracket present, work on them
 	while (ob != -1){
@@ -72,11 +76,24 @@ BigEval.prototype.solve = function(s){
 				}
 			}
 		}
-		s = s.slice(0, ob) + this.solve( s.slice(ob+1, cb) ) + s.slice(cb+1);
+		if (s.charAt(ob-1).match(/[a-z0-9_]/i)){ // FUNC
+			fname = s.slice(0, ob).match(/[a-z0-9_]+$/i);
+			freturn = this.solve( s.slice(ob+1, cb) );
+			freturn = this.solveFunc( freturn , fname[0] ) + '';
+			s = s.slice(0, ob-fname[0].length) + freturn + s.slice(cb+1);
+			console.log(s);
+		} else {
+			s = s.slice(0, ob) + this.solve( s.slice(ob+1, cb) ) + s.slice(cb+1);
+		}
+
 		if (this.err)
 			return this.errMsg;
 		ob = s.indexOf('(');
 	}
+
+	// check for comma - then function throw it back
+	if (s.indexOf(',') != -1)
+		return this.addPlusSign(s);
 
 	// solve expression (no brackets exist)
 	var p, bp, ap, seg, c, isAddOn=0;
@@ -146,6 +163,33 @@ BigEval.prototype.validate = function(){
 		if (stack.length != 0)
 			this.makeError(this.errBR);
 };
+
+BigEval.prototype.solveFunc = function(s, fname){
+	var arr = s.split(','), f, isMath = 0;
+	if (this[fname])
+		f = this[fname];
+	else if (Math[fname]){
+		f = Math[fname];
+		isMath = 1;
+	}
+	else if (window[fname])
+		f = window[fname];
+	else if (global[fname])
+		f = global[fname];
+	else {
+		this.makeError(this.errFN + fname);
+		return 0;
+	}
+
+	for (var i = 0; i<arr.length; i++)
+		arr[i] = (isMath) ? Number(this.solve(arr[i])) : this.solve(arr[i]);
+
+	if (arr.length == 1)
+		return f(arr[0]);
+	else if (arr.length == 2)
+		return f(arr[0], arr[1]);
+};
+
 
 BigEval.prototype.plusMinus = function(s){
 	return s.replace(/\+\+/g, '+').replace(/\+\-/g, '-').replace(/\-\+/g, '-').replace(/\-\-/g, '+');
