@@ -76,7 +76,8 @@ BigEval.prototype.solve = function(s){
 				}
 			}
 		}
-		if (s.charAt(ob-1).match(/[a-z0-9_]/i)){ // FUNC
+		// Function found
+		if (s.charAt(ob-1).match(/[a-z0-9_]/i)){
 			fname = s.slice(0, ob).match(/[a-z0-9_]+$/i);
 			freturn = this.solve( s.slice(ob+1, cb) );
 			freturn = this.solveFunc( freturn , fname[0] ) + '';
@@ -107,8 +108,8 @@ BigEval.prototype.solve = function(s){
 
 		p = s.indexOf(c, 1);
 		while (p > 0){ // the first is sign, no need to take that
-			bp = s.slice(0,p).match(/[\-\+\*\\\/]*[a-z0-9\.]+$/i);
-			ap = s.slice(p+1).match(/[\-\+]?[a-z0-9\.]+/i);
+			bp = s.slice(0,p).match(/[\-\+\*\\\/]*[a-z0-9\.(e\-)(e\+)]+$/i);
+			ap = s.slice(p+1).match(/[\-\+]?[a-z0-9\.(e\-)(e\+)]+/i);
 
 			if (!isAddOn) // no need for it when only +- signs exist
 				bp[0] = bp[0].slice(1);
