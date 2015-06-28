@@ -112,6 +112,12 @@ BigEval.prototype.solve = function(s){
 
 			if (!isAddOn) // no need for it when only +- signs exist
 				bp[0] = bp[0].slice(1);
+			if (isAddOn) // +- only ignore 1e-7
+				if ( bp[0].charAt(bp[0].length - 1) == 'e' )
+					if ( bp[0].charAt(bp[0].length - 2).match(/\d/) ){ // is number
+						p = s.indexOf(c, p+1);
+						continue;
+					}
 
 			if (c == '!'){
 				if ( bp[0].charAt(0) == '+' || bp[0].charAt(0) == '-' )
