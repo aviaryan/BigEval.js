@@ -14,7 +14,7 @@ function BigEval(){
 	this.errFN = "INVALID_FUNCTION_";
 	this.errVD = "UNDEFINED_VARIABLE_";
 
-	this.order = "!^\\/*%+-";
+	this.order = "!@\\/*%+-";
 
 	// CONSTANTS
 	this.PI = Math.PI;
@@ -34,6 +34,9 @@ BigEval.prototype.exec = function(s){
 	if (this.err)
 		return this.errMsg;
 
+	// replace ** by @
+	s = s.replace(/\*\*/g, '@');
+
 	// validate missing operator
 	var misOperator = /[a-z0-9][ \t]+[a-z0-9\.]/ig, p;
 	if (misOperator.exec(s)){
@@ -42,7 +45,7 @@ BigEval.prototype.exec = function(s){
 	}
 
 	// validate missing operand
-	var misOperands = /[\+\-\\\/\*\^\%][ \t]*([\\\/\*\^\!\%\)]|$)/g;
+	var misOperands = /[\+\-\\\/\*\@\%][ \t]*([\\\/\*\@\!\%\)]|$)/g;
 	if (misOperands.exec(s)){
 		this.err = 1;
 		return this.errMsg = this.errMN + misOperands.lastIndex;
@@ -148,7 +151,7 @@ BigEval.prototype.solve = function(s){
 					seg = this.add( b , a );
 				else if (c == '-')
 					seg = this.add( b , '-' + a );
-				else if (c == '^')
+				else if (c == '@')
 					seg = this.pow( b , a );
 				else if (c == '%')
 					seg = this.mod( b , a );
@@ -214,8 +217,8 @@ BigEval.prototype.solveFunc = function(s, fname){
 
 BigEval.prototype.parseVar = function(s){
 	var z;
-	console.log(s);
-	if (z = s.match(/^[\+\-]?[a-z][a-z0-9_]*$/i)){
+	//console.log(s);
+	if (z = s.match(/[\+\-]?[a-z][a-z0-9_]*$/i)){
 		var zs="";
 		if (z[0].charAt(0) == '-' || z[0].charAt(0) == '+'){
 			zs = z[0].slice(0,1);
