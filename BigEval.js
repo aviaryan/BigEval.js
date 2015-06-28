@@ -151,7 +151,7 @@ BigEval.prototype.solve = function(s){
 				else if (c == '+')
 					seg = this.add( b , a );
 				else if (c == '-')
-					seg = this.add( b , '-' + a );
+					seg = this.sub( b , a );
 				else if (c == '@')
 					seg = this.pow( b , a );
 				else if (c == '%')
@@ -256,6 +256,10 @@ BigEval.prototype.makeError = function(msg){
 
 BigEval.prototype.add = function(a, b){ 
 	return Number(a)+Number(b); 
+};
+
+BigEval.prototype.sub = function(a, b){
+	return Number(a)-Number(b);
 };
 
 BigEval.prototype.mul = function(a, b){
