@@ -1,0 +1,44 @@
+<html>
+<head>
+	<title>BigEval test page using MikeMcl's decimal.js</title>
+</head>
+
+<body>
+
+	<label for="exp">Input</label>
+	<input type="text" name="exp" id="exp" />
+	<p>
+		<button onclick="execute();">Submit</button>
+	</p>
+	<p>
+		<textarea id="output"></textarea>
+		<br>
+		<textarea id="evaloutput"></textarea>
+	</p>
+	
+
+	
+	<!-- Use Decimal -->
+	<script src="https://rawgit.com/MikeMcl/decimal.js/master/decimal.min.js"></script>
+	<script>
+		Decimal.config({ EXPONENTIAL_AT: 100 });
+	</script>
+
+	<script src="BigEval.js"></script>
+
+	<!-- include its methods file -->
+	<script src="extensions/MikeMcl-decimal.js"></script>
+
+	<script>
+		var exp = document.getElementById("exp");
+		var output = document.getElementById("output");
+		var be = new BigEval();
+
+		function execute(){
+			output.value = be.exec(exp.value);
+			evaloutput.value = eval(exp.value);
+		}
+	</script>
+
+</body>
+</html>
