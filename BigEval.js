@@ -21,6 +21,7 @@ function BigEval(){
 	this.PI_2 = this.PI / 2; // Math.PI_2;
 	this.LOG2E = Math.LOG2E;
 	this.DEG = this.PI / 180;
+	this.E = Math.E;
 }
 
 
@@ -117,8 +118,8 @@ BigEval.prototype.solve = function(s){
 
 		p = s.indexOf(c, 1);
 		while (p > 0){ // the first is sign, no need to take that
-			bp = s.slice(0,p).match(/[\-\+\*\\\/\%]*(e\-|e\+|[a-z0-9_\.])+$/i); // kepp e-,e+ before other regex to have it matched
-			ap = s.slice(p+1).match(/[\-\+]?(e\-|e\+|[a-z0-9_\.])+/i);
+			bp = s.slice(0,p).match(/[\-\+\*\\\/\%]*(\de\-|\de\+|[a-z0-9_\.])+$/i); // kepp e-,e+ before other regex to have it matched
+			ap = s.slice(p+1).match(/[\-\+]?(\de\-|\de\+|[a-z0-9_\.])+/i);
 			if (ap == null)
 				ap = [""];
 			
@@ -199,8 +200,6 @@ BigEval.prototype.solveFunc = function(s, fname){
 	}
 	else if (window[fname])
 		f = window[fname];
-	else if (global[fname])
-		f = global[fname];
 	else {
 		this.makeError(this.errFN + fname);
 		return 0;
@@ -218,7 +217,7 @@ BigEval.prototype.solveFunc = function(s, fname){
 BigEval.prototype.parseVar = function(s){
 	var z;
 	//console.log(s);
-	if (z = s.match(/[\+\-]?[a-z][a-z0-9_]*$/i)){
+	if (z = s.match(/^[\+\-]?[a-z][a-z0-9_]*$/i)){
 		var zs="";
 		if (z[0].charAt(0) == '-' || z[0].charAt(0) == '+'){
 			zs = z[0].slice(0,1);
