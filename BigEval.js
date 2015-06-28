@@ -14,7 +14,7 @@ function BigEval(){
 	this.errFN = "INVALID_FUNCTION_";
 	this.errVD = "UNDEFINED_VARIABLE_";
 
-	this.order = "!^\\/*+-";
+	this.order = "!^\\/*%+-";
 
 	// CONSTANTS
 	this.PI = Math.PI;
@@ -42,7 +42,7 @@ BigEval.prototype.exec = function(s){
 	}
 
 	// validate missing operand
-	var misOperands = /[\+\-\\\/\*\^][ \t]*([\\\/\*\^\!\)]|$)/g;
+	var misOperands = /[\+\-\\\/\*\^\%][ \t]*([\\\/\*\^\!\%\)]|$)/g;
 	if (misOperands.exec(s)){
 		this.err = 1;
 		return this.errMsg = this.errMN + misOperands.lastIndex;
@@ -114,7 +114,7 @@ BigEval.prototype.solve = function(s){
 
 		p = s.indexOf(c, 1);
 		while (p > 0){ // the first is sign, no need to take that
-			bp = s.slice(0,p).match(/[\-\+\*\\\/]*(e\-|e\+|[a-z0-9_\.])+$/i); // kepp e-,e+ before other regex to have it matched
+			bp = s.slice(0,p).match(/[\-\+\*\\\/\%]*(e\-|e\+|[a-z0-9_\.])+$/i); // kepp e-,e+ before other regex to have it matched
 			ap = s.slice(p+1).match(/[\-\+]?(e\-|e\+|[a-z0-9_\.])+/i);
 			if (ap == null)
 				ap = [""];
@@ -128,6 +128,7 @@ BigEval.prototype.solve = function(s){
 						continue;
 					}
 
+			// look for variables
 			b = this.parseVar(bp[0]); a = this.parseVar(ap[0]);
 			if (this.err)
 				return this.errMsg;
@@ -149,6 +150,8 @@ BigEval.prototype.solve = function(s){
 					seg = this.add( b , '-' + a );
 				else if (c == '^')
 					seg = this.pow( b , a );
+				else if (c == '%')
+					seg = this.mod( b , a );
 
 				seg = this.addPlusSign(seg + "");
 			}
@@ -271,4 +274,8 @@ BigEval.prototype.fac = function(n){
 	for (var i = 2; i <= n; i++)
 		s = this.mul(s, i);
 	return s;
+};
+
+BigEval.prototype.mod = function(a, b){
+	return Number(a)%Number(b);
 };
