@@ -192,13 +192,13 @@ BigEval.prototype.validate = function(){
 
 BigEval.prototype.solveFunc = function(s, fname){
 	var arr = s.split(','), f, isMath = 0;
-	if (this[fname])
+	if ( typeof(this[fname]) == "function" )
 		f = this[fname];
-	else if (Math[fname]){
+	else if ( typeof(Math[fname]) == "function" ){
 		f = Math[fname];
 		isMath = 1;
 	}
-	else if (window[fname])
+	else if ( typeof(window[fname]) == "function" )
 		f = window[fname];
 	else {
 		this.makeError(this.errFN + fname);
@@ -223,8 +223,10 @@ BigEval.prototype.parseVar = function(s){
 			zs = z[0].slice(0,1);
 			z[0] = z[0].slice(1);
 		}
-		if (this[ z[0].toUpperCase() ])
+		if (typeof this[z[0].toUpperCase()] !== 'undefined')
 			return zs + this[ z[0].toUpperCase() ];
+		else if (typeof this[z[0]] !== 'undefined')
+			return zs + this[ z[0] ];
 		else
 			return this.makeError(this.errVD + z[0]);
 	}
