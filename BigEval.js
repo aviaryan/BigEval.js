@@ -14,7 +14,7 @@ var BigEval = function(){
 	this.errFN = "INVALID_FUNCTION_";
 	this.errVD = "UNDEFINED_VARIABLE_";
 
-	this.order = "!@\\/*%+-&";
+	this.order = "!@\\/*%+-&^";
 
 	// CONSTANTS
 	var a = this.CONSTANT = {};
@@ -47,7 +47,7 @@ BigEval.prototype.exec = function(s){
 	}
 
 	// validate missing operand
-	var misOperands = /[\+\-\\\/\*\@\%\&][ \t]*([\\\/\*\@\!\%\&\)]|$)/g;
+	var misOperands = /[\+\-\\\/\*\@\%\&\^][ \t]*([\\\/\*\@\!\%\&\^\)]|$)/g;
 	if (misOperands.exec(s)){
 		this.err = 1;
 		return this.errMsg = this.errMN + misOperands.lastIndex;
@@ -119,11 +119,16 @@ BigEval.prototype.solve = function(s){
 
 		p = s.indexOf(c, 1);
 		while (p > 0){ // the first is sign, no need to take that
-			bp = s.slice(0,p).match(/[\-\+\*\\\/\%\&]*(\de\-|\de\+|[a-z0-9_\.])+$/i); // kepp e-,e+ before other regex to have it matched
+			bp = s.slice(0,p).match(/[\-\+\*\\\/\%]*(\de\-|\de\+|[a-z0-9_\.])+$/i); // kepp e-,e+ before other regex to have it matched
+			// & ^ are after + in priority so they dont need be above
 			ap = s.slice(p+1).match(/[\-\+]*(\de\-|\de\+|[a-z0-9_\.])+/i);
 			if (ap == null)
 				ap = [""];
 
+			if (bp == null){ // 12 & -20 - here -20 is sign.. bp of it is null . ignore it
+				p = s.indexOf(c, p+1);
+				continue;
+			}
 			if (!isAddOn) // slice *,/ signs
 				bp[0] = bp[0].slice(1);
 			if (isAddOn) // +- only ignore 1e-7
@@ -134,6 +139,7 @@ BigEval.prototype.solve = function(s){
 					}
 
 			// look for variables
+			//alert(bp[0] + c + ap[0]);
 			b = this.parseVar( this.plusMinus(bp[0]) ); a = this.parseVar( this.plusMinus(ap[0]) );
 			if (this.err)
 				return this.errMsg;
@@ -159,11 +165,14 @@ BigEval.prototype.solve = function(s){
 					seg = this.mod( b , a );
 				else if (c == '&')
 					seg = this.and( b , a );
+				else if (c == '^')
+					seg = this.xor( b , a );
 
 				seg = this.addPlusSign(seg + "");
 			}
 			s = s.slice(0, p-bp[0].length) + seg + s.slice(p+ap[0].length+1);
 			p = s.indexOf(c, 1);
+			//alert(s);
 		}
 	}
 
@@ -300,4 +309,8 @@ BigEval.prototype.mod = function(a, b){
 
 BigEval.prototype.and = function(a, b){
 	return Number(a) & Number(b);
+};
+
+BigEval.prototype.xor = function(a, b){
+	return Number(a) ^ Number(b);
 };
