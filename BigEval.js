@@ -4,7 +4,7 @@
 */
 
 
-function BigEval(){
+var BigEval = function(){
 	this.err = 0;
 	this.errMsg = "";
 	this.errBR = "IMPROPER_BRACKETS";
@@ -22,7 +22,7 @@ function BigEval(){
 	this.LOG2E = Math.LOG2E;
 	this.DEG = this.PI / 180;
 	this.E = Math.E;
-}
+};
 
 
 BigEval.prototype.exec = function(s){
