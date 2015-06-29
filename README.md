@@ -5,7 +5,7 @@ An alternative to JavaScript's eval() for solving mathematical expressions. It c
 
 ## Features
 
-* Full BODMAS support.
+* Full BODMAS/PEMDAS support.
 * Factorial (!), Power (**), Modulo (%) supported.
 * Support for numbers in scientific notation
 * Support for functions. (Big Number library functions, Math library functions, global functions)
@@ -17,8 +17,9 @@ An alternative to JavaScript's eval() for solving mathematical expressions. It c
 After including *BigEval.js*, the first step is to get a handle to the BigEval object. Then we can use the `exec()` method to solve a expression.
 ```javascript
 var Obj = new BigEval();
-var result = Obj.exec("5! + 6.6e3 * (321-147)");
-var result2 = Obj.exec("sin(45 * deg)**2 + cos(45 * deg)**2");
+var result = Obj.exec("5! + 6.6e3 * ((321-147) % 26)"); // 118920
+var result2 = Obj.exec("sin(45 * deg)**2 + cos(45 * deg)**2"); // 1
+var result3 = Obj.exec("-3 * -5 + 27 / -3"); //6
 ```
 
 

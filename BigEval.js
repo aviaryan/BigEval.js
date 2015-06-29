@@ -120,11 +120,11 @@ BigEval.prototype.solve = function(s){
 		p = s.indexOf(c, 1);
 		while (p > 0){ // the first is sign, no need to take that
 			bp = s.slice(0,p).match(/[\-\+\*\\\/\%]*(\de\-|\de\+|[a-z0-9_\.])+$/i); // kepp e-,e+ before other regex to have it matched
-			ap = s.slice(p+1).match(/[\-\+]?(\de\-|\de\+|[a-z0-9_\.])+/i);
+			ap = s.slice(p+1).match(/[\-\+]*(\de\-|\de\+|[a-z0-9_\.])+/i);
 			if (ap == null)
 				ap = [""];
-			
-			if (!isAddOn) // no need for it when only +- signs exist
+
+			if (!isAddOn) // slice *,/ signs
 				bp[0] = bp[0].slice(1);
 			if (isAddOn) // +- only ignore 1e-7
 				if ( bp[0].charAt(bp[0].length - 1) == 'e' )
@@ -134,7 +134,7 @@ BigEval.prototype.solve = function(s){
 					}
 
 			// look for variables
-			b = this.parseVar(bp[0]); a = this.parseVar(ap[0]);
+			b = this.parseVar( this.plusMinus(bp[0]) ); a = this.parseVar( this.plusMinus(ap[0]) );
 			if (this.err)
 				return this.errMsg;
 
@@ -143,7 +143,7 @@ BigEval.prototype.solve = function(s){
 					bp[0] = bp[0].slice(1);
 				b = this.parseVar(bp[0]);
 				seg = this.fac( b ) + "";
-				ap = [""]; // to avoid NULL
+				ap = [""]; // to avoid latter segment from being affected (unary operator)
 			} else {
 				if (c == '/' || c == '\\')
 					seg = this.div( b , a );
