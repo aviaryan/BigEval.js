@@ -1,20 +1,53 @@
 <html>
 <head>
 	<title>BigEval test page</title>
+	<style>
+	body {
+		font-family: Verdana, Consolas, serif;
+	}
+	#app {
+		max-width: 500px;
+		margin: 30px auto auto auto;
+		font-size: 18px;
+	}
+	#exp {
+		width: 90%;
+		height: 30px;
+	}
+	#output {
+		margin-bottom: 80px;
+	}
+	#notes {
+		font-size: 16px;
+	}
+	</style>
 </head>
 
 <body>
+	
+	<h1><center>BigEval test page</center></h1>
+	<hr>
+	<br>
 
-	<label for="exp">Input</label>
+	<div id="app">
+	<label for="exp">Enter expression</label>
 	<input type="text" name="exp" id="exp" />
-	<p>
+	<p align="center">
 		<button onclick="execute();">Submit</button>
 	</p>
-	<p>
-		<textarea id="output"></textarea>
-		<br>
-		<textarea id="evaloutput"></textarea>
-	</p>
+	
+	<br><h4>Output</h4>
+	<div id="output">
+	</div>
+	
+	
+	<h4>Notes</h4>
+	<ul id="notes">
+	<li>Use ! for factorial, ** for power.</li>
+	<li>Expression is solved by BODMAS rule (not left-to-right)</li>
+	<li>In this example, <code>Obj.ans</code> gets the last result of expression. So a expression like <code>ans + 2</code> when ran multiple times will give you multiplication table of 2.</li>
+	</ul>
+	</div>
 	
 
 
@@ -24,10 +57,13 @@
 		var exp = document.getElementById("exp");
 		var output = document.getElementById("output");
 		var be = new BigEval();
+		be.ans = 0;
+		be.G = 9.81; 	// new constant
+		// recommended to define variables in uppercase. ( JavaScript is case-sensitive )
+		// When expression is executed, all vars are tested in their uppercase form also. So you can use uppercase-defined vars in whatever case you like.
 
 		function execute(){
-			output.value = be.exec(exp.value);
-			evaloutput.value = eval(exp.value);
+			be.ans = (output.innerHTML = be.exec(exp.value));
 		}
 	</script>
 
