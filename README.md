@@ -5,7 +5,6 @@ An alternative to JavaScript's eval() for solving mathematical expressions. It c
 
 ## Features
 
-* Error checking before expression is executed.
 * Full BODMAS support.
 * Factorial (!), Power (**), Modulo (%) supported.
 * Support for numbers in scientific notation
