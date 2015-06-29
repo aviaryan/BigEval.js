@@ -191,9 +191,10 @@ BigEval.prototype.validate = function(){
 };
 
 BigEval.prototype.solveFunc = function(s, fname){
-	var arr = s.split(','), f, isMath = 0;
-	if ( typeof(this[fname]) == "function" )
-		f = this[fname];
+	var arr = s.split(','), f, isMath = 0, isBigEval = 0;
+	if ( typeof(this[fname]) == "function" ){
+		isBigEval = 1;
+	}
 	else if ( typeof(Math[fname]) == "function" ){
 		f = Math[fname];
 		isMath = 1;
@@ -209,9 +210,11 @@ BigEval.prototype.solveFunc = function(s, fname){
 		arr[i] = (isMath) ? Number(this.solve(arr[i])) : this.solve(arr[i]);
 
 	if (arr.length == 1)
-		return f(arr[0]);
+		return isBigEval ? this[fname].call(this, arr[0]) : f(arr[0]);
 	else if (arr.length == 2)
-		return f(arr[0], arr[1]);
+		return isBigEval ? this[fname].call(this, arr[0], arr[1]) : f(arr[0], arr[1]);
+	else if (arr.length == 3)
+		return isBigEval ? this[fname].call(this, arr[0], arr[1], arr[2]) : f(arr[0], arr[1], arr[2]);
 };
 
 BigEval.prototype.parseVar = function(s){

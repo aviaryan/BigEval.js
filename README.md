@@ -23,10 +23,29 @@ var result2 = Obj.exec("sin(45 * deg)**2 + cos(45 * deg)**2");
 ```
 
 
+### Operators
+
+The operators currently supported in order of precedence are - 
+```
+Factorial = !
+Power = **
+Division = \ or /
+Multiplication = *
+Modulo = %
+Addition = +
+Subtraction = -
+```
+
+
 ### Functions
 
 BigEval supports functions like sin(), cos() ... When a function is used in an expression, BigEval first looks into its methods to see if such a function exist, then it looks into the JavaScript `Math()` library and in the end it looks into window's global namespace for the function.
-Please note that we use just `sin()` and not `Math.sin()` in expressions. 
+Please note that we use just `sin()` and not `Math.sin()` in expressions. Attaching a new function to BigEval is easy.
+```javascript
+BigEval.prototype.avg = function(a, b){
+    return this.div( this.add(a,b) , "2");
+};
+```
 
 
 ### Constants

@@ -52,18 +52,23 @@
 
 
 	<script src="BigEval.js"></script>
+	<script>
+		BigEval.prototype.avg = function(a, b){
+			return this.div( this.add(a,b) , "2");
+		};
+	</script>
 
 	<script>
 		var exp = document.getElementById("exp");
 		var output = document.getElementById("output");
-		var be = new BigEval();
-		be.ans = 0;
-		be.G = 9.81; 	// new constant
+		var Obj = new BigEval();
+		Obj.ans = 0;
+		Obj.G = 9.81; 	// new constant
 		// recommended to define variables in uppercase. ( JavaScript is case-sensitive )
 		// When expression is executed, all vars are tested in their uppercase form also. So you can use uppercase-defined vars in whatever case you like.
 
 		function execute(){
-			be.ans = (output.innerHTML = be.exec(exp.value));
+			Obj.ans = (output.innerHTML = Obj.exec(exp.value));
 		}
 	</script>
 
