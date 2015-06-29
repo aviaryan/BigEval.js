@@ -37,7 +37,7 @@
 	</p>
 	
 	<br><h4>Output</h4>
-	<div id="output">
+	<div id="output">0
 	</div>
 	
 	
@@ -45,7 +45,8 @@
 	<ul id="notes">
 	<li>Use ! for factorial, ** for power.</li>
 	<li>Expression is solved by BODMAS rule (not left-to-right)</li>
-	<li>In this example, <code>Obj.ans</code> gets the last result of expression. So a expression like <code>ans + 2</code> when ran multiple times will give you multiplication table of 2.</li>
+	<li>In this example, <code>Obj.CONSTANT.ans</code> gets the last result of expression. So a expression like <code>ans + 2</code> when ran multiple times will give you multiplication table of 2.</li>
+	<li>Visit <a href="https://github.com/aviaryan/BigEval.js">project README</a> for more details.</li>
 	</ul>
 	</div>
 	
@@ -62,13 +63,13 @@
 		var exp = document.getElementById("exp");
 		var output = document.getElementById("output");
 		var Obj = new BigEval();
-		Obj.ans = 0;
-		Obj.G = 9.81; 	// new constant
+		Obj.CONSTANT.ans = "0";
+		Obj.CONSTANT.G = "9.81"; 	// new constant
 		// recommended to define variables in uppercase. ( JavaScript is case-sensitive )
 		// When expression is executed, all vars are tested in their uppercase form also. So you can use uppercase-defined vars in whatever case you like.
 
 		function execute(){
-			Obj.ans = (output.innerHTML = Obj.exec(exp.value));
+			Obj.CONSTANT.ans = (output.innerHTML = Obj.exec(exp.value));
 		}
 	</script>
 

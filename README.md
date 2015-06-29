@@ -50,7 +50,7 @@ BigEval.prototype.avg = function(a, b){
 ### Constants
 
 Constants are nothing but properties of the BigEval object. To use a constant such as PI in an expression, we can simply write `PI`. Example - `sin( PI / 4 )`.
-To add a new constant, we do `Obj.NAME = VALUE`. Default constants include - 
+To add a new constant, we do `Obj.CONSTANT.NAME = VALUE`. The VALUE should be in **string format**. Default constants include - 
 ```ini
 PI = 3.1415...
 PI_2 = PI / 2

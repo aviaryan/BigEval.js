@@ -17,11 +17,12 @@ var BigEval = function(){
 	this.order = "!@\\/*%+-";
 
 	// CONSTANTS
-	this.PI = Math.PI;
-	this.PI_2 = this.PI / 2; // Math.PI_2;
-	this.LOG2E = Math.LOG2E;
-	this.DEG = this.PI / 180;
-	this.E = Math.E;
+	var a = this.CONSTANT = {};
+	a.PI = Math.PI;
+	a.PI_2 = a.PI / 2; // Math.PI_2;
+	a.LOG2E = Math.LOG2E;
+	a.DEG = a.PI / 180;
+	a.E = Math.E;
 };
 
 
@@ -215,6 +216,10 @@ BigEval.prototype.solveFunc = function(s, fname){
 		return isBigEval ? this[fname].call(this, arr[0], arr[1]) : f(arr[0], arr[1]);
 	else if (arr.length == 3)
 		return isBigEval ? this[fname].call(this, arr[0], arr[1], arr[2]) : f(arr[0], arr[1], arr[2]);
+	else if (arr.length == 4)
+		return isBigEval ? this[fname].call(this, arr[0], arr[1], arr[2], arr[3]) : f(arr[0], arr[1], arr[2], arr[3]);
+	else
+		return this.makeError("FUNCTION HAS MORE THAN 4 PARAMS. CONTACT AUTHOR");
 };
 
 BigEval.prototype.parseVar = function(s){
@@ -226,10 +231,10 @@ BigEval.prototype.parseVar = function(s){
 			zs = z[0].slice(0,1);
 			z[0] = z[0].slice(1);
 		}
-		if (typeof this[z[0].toUpperCase()] !== 'undefined')
-			return zs + this[ z[0].toUpperCase() ];
-		else if (typeof this[z[0]] !== 'undefined')
-			return zs + this[ z[0] ];
+		if (typeof this.CONSTANT[z[0].toUpperCase()] !== 'undefined')
+			return zs + this.CONSTANT[ z[0].toUpperCase() ];
+		else if (typeof this.CONSTANT[z[0]] !== 'undefined')
+			return zs + this.CONSTANT[ z[0] ];
 		else
 			return this.makeError(this.errVD + z[0]);
 	}
