@@ -1,6 +1,6 @@
 # BigEval.js
 
-An alternative to JavaScript's eval() for solving mathematical expressions. It can be extended to use the *Big Number* libraries available to provide results with maximum precision.
+An alternative to JavaScript's eval() for solving mathematical expressions. It can be extended to use the *Big Number* libraries available to provide results with maximum precision. See [Releases](https://github.com/aviaryan/BigEval.js/releases) for compressed script (~4kb) download.
 
 
 ## Features
