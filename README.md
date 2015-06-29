@@ -32,9 +32,16 @@ Please note that we use just `sin()` and not `Math.sin()` in expressions.
 ### Constants
 
 Constants are nothing but properties of the BigEval object. To use a constant such as PI in an expression, we can simply write `PI`. Example - `sin( PI / 4 )`.
-To add a new constant, we do `Obj.NAME = VALUE`
+To add a new constant, we do `Obj.NAME = VALUE`. Default constants include - 
+```ini
+PI = 3.1415...
+PI_2 = PI / 2
+LOG2E = log(e) / log(2)
+DEG = PI / 180
+E = 2.718...
+```
 
 
 ### Extending with Big Number libraries
 
-BigEval can be extended with any of the big number libraries for JavaScript. To extend BigEval, we only need to change its methods that are responsible for adding, subtracting and so.
+BigEval can be extended with any of the big number libraries for JavaScript. To extend BigEval, we only need to change its methods that are responsible for adding, subtracting and so. For an example see the extension [MikeMcl-decimal.js](extensions/MikeMcl-decimal.js) which is based on [MikeMcl's Decimal.js library](https://github.com/MikeMcl/decimal.js). The HTML page [extended.html](http://aviaryan.github.io/BigEval.js/extended.html) shows how to use this extension.
