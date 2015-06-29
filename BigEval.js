@@ -1,6 +1,7 @@
 /*
-	BigEval.js v0.1
-	by Avi Aryan
+	BigEval.js
+	by Avi Aryan (http://aviaryan.in)
+	https://github.com/aviaryan/bigEval.js
 */
 
 

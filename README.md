@@ -5,8 +5,8 @@ An alternative to JavaScript's eval() for solving mathematical expressions. It c
 
 ## Features
 
-* Full BODMAS/PEMDAS support.
-* Factorial (!), Power (**), Modulo (%) supported.
+* Full BODMAS/PEMDAS support (just like `Eval`).
+* Factorial (!), Power (**), Modulo (%), And (&), Xor (^), Or (|) supported.
 * Support for numbers in scientific notation
 * Support for functions. (Big Number library functions, Math library functions, global functions)
 * Support for CONSTANTS. Default constants include PI, E, PI_2 and more.
@@ -19,7 +19,7 @@ After including *BigEval.js*, the first step is to get a handle to the BigEval o
 var Obj = new BigEval();
 var result = Obj.exec("5! + 6.6e3 * ((321-147) % 26)"); // 118920
 var result2 = Obj.exec("sin(45 * deg)**2 + cos(45 * deg)**2"); // 1
-var result3 = Obj.exec("-3 * -5 + 27 / -3"); //6
+var result3 = Obj.exec("-3 * -5 + 27 / -3 - 4&6"); //2
 ```
 
 
@@ -34,6 +34,9 @@ Multiplication = *
 Modulo = %
 Addition = +
 Subtraction = -
+And = &
+Xor = ^
+Or = |
 ```
 
 
