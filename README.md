@@ -14,7 +14,7 @@ An alternative to JavaScript's eval() for solving mathematical expressions. It c
 
 ### Using
 
-After including *BigEval.js*, the first step is to get a handle to the BigEval object. Then we can use the `exec()` method to solve a expression.
+After including *BigEval.js*, the first step is to get a handle to the BigEval object. Then we can use the `exec()` method to solve a expression. See [project page](http://aviaryan.in/BigEval.js/index.html) for a working example.
 ```javascript
 var Obj = new BigEval();
 var result = Obj.exec("5! + 6.6e3 * ((321-147) % 26)"); // 118920
@@ -54,7 +54,7 @@ BigEval.prototype.avg = function(a, b){
 ### Constants
 
 Constants are nothing but properties of the BigEval object. To use a constant such as PI in an expression, we can simply write `PI`. Example - `sin( PI / 4 )`.
-To add a new constant, we do `Obj.CONSTANT.NAME = VALUE`. The VALUE should be in **string format**. A constant name should start with an alphabet and should only use `[a-z0-9_]` characters. Default constants include - 
+To add a new constant, we do `Obj.CONSTANT.NAME = VALUE`. The VALUE should be in **string format**. A constant NAME should start with an alphabet and should only use `[a-z0-9_]` characters. Default constants include - 
 ```ini
 PI = 3.1415...
 PI_2 = PI / 2
@@ -67,3 +67,10 @@ E = 2.718...
 ### Extending with Big Number libraries
 
 BigEval can be extended with any of the big number libraries for JavaScript. To extend BigEval, we only need to change its methods that are responsible for adding, subtracting and so. For an example see the extension [MikeMcl-decimal.js](extensions/MikeMcl-decimal.js) which is based on [MikeMcl's Decimal.js library](https://github.com/MikeMcl/decimal.js). The HTML page [extended.html](http://aviaryan.github.io/BigEval.js/extended.html) shows how to use this extension.
+
+
+### Credits
+
+* [Avi Aryan](http://aviaryan.in)
+
+
