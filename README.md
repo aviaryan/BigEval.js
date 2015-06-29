@@ -21,6 +21,7 @@ var result = Obj.exec("5! + 6.6e3 * ((321-147) % 26)"); // 118920
 var result2 = Obj.exec("sin(45 * deg)**2 + cos(45 * deg)**2"); // 1
 var result3 = Obj.exec("-3 * -5 + 27 / -3 - 4&6"); //2
 ```
+The `exec` method returns the answer as **string**. If an error occurs, then `Obj.err` is set to true and the error message is returned by exec().
 
 
 ### Operators

@@ -14,6 +14,7 @@ var BigEval = function(){
 	this.errIC = "INVALID_CHAR_AT_";
 	this.errFN = "INVALID_FUNCTION_";
 	this.errVD = "UNDEFINED_VARIABLE_";
+	this.errFL = "FUNCTION_LIMIT_EXCEEDED_BY_";
 
 	this.order = "!@\\/*%+-&^|";
 
@@ -30,10 +31,9 @@ var BigEval = function(){
 BigEval.prototype.exec = function(s){
 	this.err = 0;
 	this.errMsg = "";
-	this.str = s;
 
 	// validate brackets
-	this.validate();
+	this.validate(s);
 	if (this.err)
 		return this.errMsg;
 
@@ -183,14 +183,14 @@ BigEval.prototype.solve = function(s){
 	return this.parseVar(s);
 };
 
-BigEval.prototype.validate = function(){
+BigEval.prototype.validate = function(s){
 	// checks expression for errors
 	var stack = [], err = 0;
 
-	for ( var i = 0; i < this.str.length; i++ ){
-		if ( this.str[i] == '(' )
+	for ( var i = 0; i < s.length; i++ ){
+		if ( s[i] == '(' )
 			stack.push(0);
-		else if ( this.str[i] == ')' ){
+		else if ( s[i] == ')' ){
 			if (stack.length > 0)
 				stack.pop();
 			else {
@@ -233,7 +233,7 @@ BigEval.prototype.solveFunc = function(s, fname){
 	else if (arr.length == 4)
 		return isBigEval ? this[fname].call(this, arr[0], arr[1], arr[2], arr[3]) : f(arr[0], arr[1], arr[2], arr[3]);
 	else
-		return this.makeError("FUNCTION HAS MORE THAN 4 PARAMS. CONTACT AUTHOR");
+		return this.makeError(this.errFL + fname);
 };
 
 BigEval.prototype.parseVar = function(s){
