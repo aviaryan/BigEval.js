@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Unit tests for BigEval</title>
+	<meta name="viewport" content="width=device-width">
+	<script src="BigEval.js"></script>
+	<script>
+		var b = new BigEval();
+	</script>
+	<style>
+		#page {
+			max-width: 600px;
+			margin: 0 auto auto auto;
+		}
+	</style>
+</head>
+
+<body>
+	
+	<h1><center>Unit tests for BigEval</center></h1>
+	<hr>
+	<div id="page">
+		A really ugly page to check if BigEval is doing the Maths right. It builds random expressions and checks Eval's output against BigEval's.
+		
+		<br><br><br>
+		<div id="ct">
+		</div>
+
+		<div id="res">
+		</div>
+	
+	</div>
+
+	<script>
+		var l = 100000;
+		var sz, j, exp, r1, r2;
+		var ops = "+-/*&^|%"; // 7 (mod can be problem, - divide)
+		var res = document.getElementById("res");
+		var ct = document.getElementById("ct");
+
+		for (var i = 0; i<l; i++){
+			sz = Math.floor((Math.random() * 10 + 3));
+			if (sz % 2 == 0)
+				sz ++;
+			exp = "";
+			for (j = 0; j < sz; j++){ // build exp
+				if (j%2==0)
+					exp += Math.floor(Math.random() * 20 - 9); // -9
+				else
+					exp += ops[ Math.floor(Math.random() * 8) ];
+			}
+			exp = BigEval.prototype.plusMinus(exp);
+
+			res.innerHTML = exp;
+			r1 = b.exec(exp);
+			r2 = eval(exp);
+			if (r1 != r2){
+				if ( Math.abs(Number(r1)-r2) > 0.1 ){ // precision
+					ct.innerHTML = i + " error " + r1 + " " + r2;
+					break;
+				}
+			} else {
+				ct.innerHTML = i;
+			}
+		}
+
+		if (i == l)
+			ct.innerHTML += " Everything went right";
+	</script>
+
+</body>
+</html>
