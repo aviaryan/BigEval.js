@@ -17,6 +17,7 @@ var BigEval = function(){
 	this.errFL = "FUNCTION_LIMIT_EXCEEDED_BY_";
 
 	this.order = "!@\\/*%+-&^|";
+	// https://en.wikipedia.org/wiki/Order_of_operations#Programming_languages
 
 	// CONSTANTS
 	var a = this.CONSTANT = {};
@@ -25,6 +26,8 @@ var BigEval = function(){
 	a.LOG2E = Math.LOG2E;
 	a.DEG = a.PI / 180;
 	a.E = Math.E;
+	a.INFINITY = "Infinity";
+	a.NaN = "NaN";
 };
 
 
@@ -120,7 +123,7 @@ BigEval.prototype.solve = function(s){
 
 		p = s.indexOf(c, 1);
 		while (p > 0){ // the first is sign, no need to take that
-			bp = s.slice(0,p).match(/[\-\+\*\\\/\%]*(\de\-|\de\+|[a-z0-9_\.])+$/i); // kepp e-,e+ before other regex to have it matched
+			bp = s.slice(0,p).match(/[\-\+]*(\de\-|\de\+|[a-z0-9_\.])+$/i); // kepp e-,e+ before other regex to have it matched
 			// & ^ | are after + in priority so they dont need be above
 			ap = s.slice(p+1).match(/[\-\+]*(\de\-|\de\+|[a-z0-9_\.])+/i);
 			if (ap == null)
@@ -130,8 +133,10 @@ BigEval.prototype.solve = function(s){
 				p = s.indexOf(c, p+1);
 				continue;
 			}
-			if (!isAddOn) // slice *,/ signs
-				bp[0] = bp[0].slice(1);
+			if (!isAddOn) // slice the extra +- sign that is not for number
+				if (bp[0].match(/[\-\+]/))
+					bp[0] = bp[0].slice(1);
+
 			if (isAddOn) // +- only ignore 1e-7
 				if ( bp[0].charAt(bp[0].length - 1) == 'e' )
 					if ( bp[0].charAt(bp[0].length - 2).match(/\d/) ){ // is number
@@ -140,7 +145,7 @@ BigEval.prototype.solve = function(s){
 					}
 
 			// look for variables
-			//alert(bp[0] + c + ap[0]);
+			// alert(bp[0] + c + ap[0]);
 			b = this.parseVar( this.plusMinus(bp[0]) ); a = this.parseVar( this.plusMinus(ap[0]) );
 			if (this.err)
 				return this.errMsg;
