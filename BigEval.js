@@ -16,7 +16,8 @@ var BigEval = function(){
 	this.errVD = "UNDEFINED_VARIABLE_";
 	this.errFL = "FUNCTION_LIMIT_EXCEEDED_BY_";
 
-	this.order = "!@\\/*%+-&^|";
+	//this.order = "!@\\/*%+-&^|";
+	this.order = ['!' , '@' , '\\/*%' , '+-' , '&' , '^' , '|'];
 	// https://en.wikipedia.org/wiki/Order_of_operations#Programming_languages
 
 	// CONSTANTS
@@ -112,16 +113,17 @@ BigEval.prototype.solve = function(s){
 		return this.addPlusSign(s);
 
 	// solve expression (no brackets exist)
-	var p, bp, ap, seg, c, isAddOn=0, b, a;
+	var p, bp, ap, seg, c, cs, isAddOn=0, b, a;
 	for (var i = 0; i < this.order.length; i++){
 
-		c = this.order[i];
-		if (c == '+'){ // resolve +- made due to bracket solving
+		cs = this.order[i];
+		if (cs == '+-'){ // resolve +- made due to bracket solving
 			s = this.plusMinus(s);
 			isAddOn = 1;
 		}
 
-		p = s.indexOf(c, 1);
+		p = this.leastIndexOf(s, cs, 1); //p = s.indexOf(c, 1);
+
 		while (p > 0){ // the first is sign, no need to take that
 			bp = s.slice(0,p).match(/[\-\+]*(\de\-|\de\+|[a-z0-9_\.])+$/i); // kepp e-,e+ before other regex to have it matched
 			// & ^ | are after + in priority so they dont need be above
@@ -130,7 +132,8 @@ BigEval.prototype.solve = function(s){
 				ap = [""];
 
 			if (bp == null){ // 12 & -20 - here -20 is sign.. bp of it is null . ignore it
-				p = s.indexOf(c, p+1);
+				//p = s.indexOf(c, p+1);
+				p = this.leastIndexOf(s, cs, p+1);
 				continue;
 			}
 			if (!isAddOn) // slice the extra +- sign that is not for number
@@ -140,12 +143,14 @@ BigEval.prototype.solve = function(s){
 			if (isAddOn) // +- only ignore 1e-7
 				if ( bp[0].charAt(bp[0].length - 1) == 'e' )
 					if ( bp[0].charAt(bp[0].length - 2).match(/\d/) ){ // is number
-						p = s.indexOf(c, p+1);
+						//p = s.indexOf(c, p+1);
+						p = this.leastIndexOf(s, cs, p+1);
 						continue;
 					}
 
 			// look for variables
-			// alert(bp[0] + c + ap[0]);
+			c = s.charAt(p);
+			//alert(bp[0] + s.charAt(p) + ap[0]);
 			b = this.parseVar( this.plusMinus(bp[0]) ); a = this.parseVar( this.plusMinus(ap[0]) );
 			if (this.err)
 				return this.errMsg;
@@ -179,7 +184,7 @@ BigEval.prototype.solve = function(s){
 				seg = this.addPlusSign(seg + "");
 			}
 			s = s.slice(0, p-bp[0].length) + seg + s.slice(p+ap[0].length+1);
-			p = s.indexOf(c, 1);
+			p = this.leastIndexOf(s, cs, 1); //s.indexOf(c, 1);
 			//alert(s);
 		}
 	}
@@ -259,6 +264,20 @@ BigEval.prototype.parseVar = function(s){
 	}
 	else
 		return s;
+};
+
+BigEval.prototype.leastIndexOf = function(s, cs, sp){
+	var l = -1, p;
+	for (var i=0; i<cs.length; i++){
+		p = s.indexOf(cs[i], sp);
+		if (p==-1)
+			continue;
+		if (l==-1)
+			l=p;
+		else if (p<l)
+			l=p;
+	}
+	return l;
 };
 
 BigEval.prototype.plusMinus = function(s){
