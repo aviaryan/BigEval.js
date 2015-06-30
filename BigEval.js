@@ -16,7 +16,6 @@ var BigEval = function(){
 	this.errVD = "UNDEFINED_VARIABLE_";
 	this.errFL = "FUNCTION_LIMIT_EXCEEDED_BY_";
 
-	//this.order = "!@\\/*%+-&^|";
 	this.order = ['!' , '@' , '\\/*%' , '+-' , '&' , '^' , '|'];
 	// https://en.wikipedia.org/wiki/Order_of_operations#Programming_languages
 
@@ -122,7 +121,7 @@ BigEval.prototype.solve = function(s){
 			isAddOn = 1;
 		}
 
-		p = this.leastIndexOf(s, cs, 1); //p = s.indexOf(c, 1);
+		p = this.leastIndexOf(s, cs, 1);
 
 		while (p > 0){ // the first is sign, no need to take that
 			bp = s.slice(0,p).match(/[\-\+]*(\de\-|\de\+|[a-z0-9_\.])+$/i); // kepp e-,e+ before other regex to have it matched
@@ -132,7 +131,6 @@ BigEval.prototype.solve = function(s){
 				ap = [""];
 
 			if (bp == null){ // 12 & -20 - here -20 is sign.. bp of it is null . ignore it
-				//p = s.indexOf(c, p+1);
 				p = this.leastIndexOf(s, cs, p+1);
 				continue;
 			}
@@ -143,7 +141,6 @@ BigEval.prototype.solve = function(s){
 			if (isAddOn) // +- only ignore 1e-7
 				if ( bp[0].charAt(bp[0].length - 1) == 'e' )
 					if ( bp[0].charAt(bp[0].length - 2).match(/\d/) ){ // is number
-						//p = s.indexOf(c, p+1);
 						p = this.leastIndexOf(s, cs, p+1);
 						continue;
 					}
@@ -184,7 +181,7 @@ BigEval.prototype.solve = function(s){
 				seg = this.addPlusSign(seg + "");
 			}
 			s = s.slice(0, p-bp[0].length) + seg + s.slice(p+ap[0].length+1);
-			p = this.leastIndexOf(s, cs, 1); //s.indexOf(c, 1);
+			p = this.leastIndexOf(s, cs, 1); 
 			//alert(s);
 		}
 	}

@@ -17,9 +17,9 @@ An alternative to JavaScript's eval() for solving mathematical expressions. It c
 After including *BigEval.js*, the first step is to get a handle to the BigEval object. Then we can use the `exec()` method to solve a expression. See [project page](http://aviaryan.in/BigEval.js/index.html) for a working example.
 ```javascript
 var Obj = new BigEval();
-var result = Obj.exec("5! + 6.6e3 * ((321-147) % 26)"); // 118920
-var result2 = Obj.exec("sin(45 * deg)**2 + cos(45 * deg)**2"); // 1
-var result3 = Obj.exec("-3 * -5 + 27 / -3 - 4&6"); //2
+var result = Obj.exec("5! + 6.6e3 * (PI + E)"); // 38795.17158152233
+var result2 = Obj.exec("sin(45 * deg)**2 + cos(pi / 4)**2"); // 1
+var result3 = Obj.exec("0 & -7 ^ -7 - 0%1 + 6%2"); //-7
 ```
 The `exec` method returns the answer as **string**. If an error occurs, then `Obj.err` is set to true and the error message is returned by exec().
 
@@ -28,16 +28,13 @@ The `exec` method returns the answer as **string**. If an error occurs, then `Ob
 
 The operators currently supported in order of precedence are - 
 ```
-Factorial = !
-Power = **
-Division = \ or /
-Multiplication = *
-Modulo = %
-Addition = +
-Subtraction = -
-And = &
-Xor = ^
-Or = |
+Factorial (!)
+Power (**)
+Division (/ or \) , Multiplication (*), Modulo (%)
+Addition (+), Subtraction (-)
+And (&)
+Xor (^)
+Or (|)
 ```
 
 
@@ -62,6 +59,8 @@ PI_2 = PI / 2
 LOG2E = log(e) / log(2)
 DEG = PI / 180
 E = 2.718...
+INFINITY = Infinity
+NaN = NaN
 ```
 
 
