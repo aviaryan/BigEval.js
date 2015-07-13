@@ -8,8 +8,8 @@ An alternative to JavaScript's eval() for solving mathematical expressions. It c
 * Full BODMAS/PEMDAS support (just like `Eval`).
 * Factorial (!), Power (**), Modulo (%), And (&), Xor (^), Or (|) supported.
 * Support for numbers in scientific notation
-* Support for functions. (Big Number library functions, Math library functions, global functions)
-* Support for CONSTANTS. Default constants include PI, E, PI_2 and more.
+* Support for functions. (Math library functions, User functions)
+* Support for CONSTANTS/variables in expressions.
 
 
 ### Using
@@ -17,9 +17,10 @@ An alternative to JavaScript's eval() for solving mathematical expressions. It c
 After including *BigEval.js*, the first step is to get a handle to the BigEval object. Then we can use the `exec()` method to solve a expression. See [project page](http://aviaryan.in/BigEval.js/index.html) for a working example.
 ```javascript
 var Obj = new BigEval();
-var result = Obj.exec("5! + 6.6e3 * (PI + E)"); // 38795.17158152233
+var result = Obj.exec("5! + 1e3 * (PI + E)"); // 5979.874482048837
 var result2 = Obj.exec("sin(45 * deg)**2 + cos(pi / 4)**2"); // 1
 var result3 = Obj.exec("0 & -7 ^ -7 - 0%1 + 6%2"); //-7
+var result4 = Obj.exec("sin( acos( ceil( tan(pi/6) ) ) )"); // sin(0) i.e. 0
 ```
 The `exec` method returns the answer as **string**. If an error occurs, then `Obj.err` is set to true and the error message is returned by exec().
 
