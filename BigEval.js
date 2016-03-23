@@ -4,7 +4,6 @@
 	https://github.com/aviaryan/bigEval.js
 */
 
-
 var BigEval = function(){
 	this.err = 0;
 	this.errMsg = "";
@@ -342,3 +341,13 @@ BigEval.prototype.xor = function(a, b){
 BigEval.prototype.or = function(a, b){
 	return Number(a) | Number(b);
 };
+
+
+/**
+ * Node compatibility
+ */
+if (typeof exports !== 'undefined'){
+	exports.BigEval = function(){
+		return new BigEval();
+	};
+}
