@@ -1,7 +1,7 @@
 # BigEval.js
 
 [![Build Status](https://travis-ci.org/aviaryan/BigEval.js.svg?branch=gh-pages)](https://travis-ci.org/aviaryan/BigEval.js)
-[![npm](https://img.shields.io/npm/aviaryan/bigeval.svg)]()
+[![npm version](https://badge.fury.io/js/bigeval.svg)](https://badge.fury.io/js/bigeval)
 
 An alternative to JavaScript's eval() for solving mathematical expressions. It can be extended to use the *Big Number* libraries available to provide results with maximum precision. See [Releases](https://github.com/aviaryan/BigEval.js/releases) for compressed script (~4kb) download.
 
