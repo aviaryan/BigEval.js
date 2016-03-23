@@ -292,11 +292,9 @@ BigEval.prototype.makeError = function(msg){
 };
 
 
-/******************
-*
-* FUNCTIONS BENEATH
-*
-*******************/
+/**
+ * Extension functions
+ */
 
 BigEval.prototype.add = function(a, b){ 
 	return Number(a)+Number(b); 
@@ -347,7 +345,5 @@ BigEval.prototype.or = function(a, b){
  * Node compatibility
  */
 if (typeof exports !== 'undefined'){
-	exports.BigEval = function(){
-		return new BigEval();
-	};
+	module.exports = BigEval;
 }
