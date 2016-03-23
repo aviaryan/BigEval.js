@@ -1,11 +1,16 @@
 /*
-
 	BigEval extension for MikeMcl's decimal.js
 	https://github.com/MikeMcl/decimal.js
-
 */
 
-BigEval.prototype.add = function(a, b){ 
+// import decimal module in case of node
+if (typeof module !== 'undefined' && typeof exports !== 'undefined'){
+	var Decimal = require('decimal.js');
+	var BigEval = require('../BigEval.js');
+}
+
+// override methods
+BigEval.prototype.add = function(a, b){
 	return new Decimal(a).plus(b);
 };
 
@@ -46,3 +51,10 @@ BigEval.prototype.ln = function(a){
 BigEval.prototype.exp = function(a){
 	return new Decimal(a).exp();
 };
+
+/*
+ * Export module
+ */
+if (typeof module !== 'undefined' && module.exports && typeof exports !== 'undefined'){
+	module.exports = BigEval;
+}
