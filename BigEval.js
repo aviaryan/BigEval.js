@@ -344,6 +344,6 @@ BigEval.prototype.or = function(a, b){
 /**
  * Node compatibility
  */
-if (typeof exports !== 'undefined'){
+if (typeof module !== 'undefined' && module.exports && typeof exports !== 'undefined'){
 	module.exports = BigEval;
 }
