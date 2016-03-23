@@ -7,6 +7,9 @@ node_js:
   - "4.1"
   - "4.0"
   - "0.12"
+install:
+  - npm install nodeunit -g
+script: npm test
 branches:
   only:
     - gh-pages
