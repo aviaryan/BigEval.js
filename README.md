@@ -5,22 +5,16 @@
 An alternative to JavaScript's eval() for solving mathematical expressions. It can be extended to use the *Big Number* libraries available to provide results with maximum precision. See [Releases](https://github.com/aviaryan/BigEval.js/releases) for compressed script (~4kb) download.
 
 
-## Using
+## Installation
 
 * Node
 ```
 npm install bigeval
 > var BigEval = require('bigeval')
-> b = new BigEval()
-> b.exec('2+3')
 ```
 * From browser
 ```html
 <script src="BigEval.js"></script>
-<script>
-var b = new BigEval();
-console.log(b.exec('2+3'));
-</script>
 ```
 
 
