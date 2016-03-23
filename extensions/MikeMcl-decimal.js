@@ -6,7 +6,7 @@
 // import decimal module in case of node
 if (typeof module !== 'undefined' && typeof exports !== 'undefined'){
 	var Decimal = require('decimal.js');
-	var BigEval = require('../BigEval.js');
+	var BigEval = require('bigeval');
 }
 
 // override methods
