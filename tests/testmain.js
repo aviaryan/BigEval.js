@@ -43,8 +43,53 @@ exports.testBasics = {
 	}
 };
 
+/**
+ * test basic expressions
+ * @param test
+ */
 exports.testBasic = function(test){
 	var b = new BigEval();
 	test.equals(b.exec("12+45*10"), ''+462);
+	test.done();
+};
+
+/**
+ * Batch test BigEval over randomly generated expressions
+ * Compared with eval()'s output
+ * @param test
+ */
+exports.testBatch = function(test){
+	var b = new BigEval();
+	var l = 5000; // no of tests
+	var m = 15; // max size of expression
+
+	var sz, j, exp, r1, r2;
+	var ops = "+-/*&^|%"; // 7 (mod can be problem, - divide)
+
+	for (var i = 0; i<l; i++){
+		sz = Math.floor((Math.random() * m + 3));
+		if (sz % 2 == 0)
+			sz ++;
+		exp = "";
+		for (j = 0; j < sz; j++){ // build exp
+			if (j%2==0)
+				exp += Math.floor(Math.random() * 20 - 9); // -9
+			else
+				exp += ops[ Math.floor(Math.random() * 8) ];
+		}
+		exp = BigEval.prototype.plusMinus(exp);
+
+		r1 = b.exec(exp);
+		r2 = eval(exp);
+		if (r1 != r2){
+			if ( Math.abs(Number(r1)-r2) > 0.1 ){ // precision
+				console.log(i + " error " + r1 + " " + r2);
+				test.equals(0,1);
+				test.done();
+				break;
+			}
+		}
+	}
+	test.equals(1,1);
 	test.done();
 };
