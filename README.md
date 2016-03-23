@@ -6,7 +6,7 @@
 An alternative to JavaScript's eval() for solving mathematical expressions. It can be extended to use the *Big Number* libraries available to provide results with maximum precision. See [Releases](https://github.com/aviaryan/BigEval.js/releases) for compressed script (~4kb) download.
 
 
-## Installation
+### Installation
 
 * Node
 ```
@@ -19,7 +19,7 @@ npm install bigeval
 ```
 
 
-## Features
+### Features
 
 * Full BODMAS/PEMDAS support (just like `Eval`).
 * Factorial (!), Power (**), Modulo (%), And (&), Xor (^), Or (|) supported.
@@ -86,7 +86,7 @@ NaN = NaN
 BigEval can be extended with any of the big number libraries for JavaScript. To extend BigEval, we only need to change its methods that are responsible for adding, subtracting and so. For an example see the extension [MikeMcl-decimal.js](extensions/MikeMcl-decimal.js) which is based on [MikeMcl's Decimal.js library](https://github.com/MikeMcl/decimal.js). The HTML page [extended.html](http://aviaryan.github.io/BigEval.js/extended.html) shows how to use this extension.
 
 To use decimaljs extension with Node, download the [file](extensions/MikeMcl-decimal.js) and then
-```
+```js
 var BigEval = require('./MikeMcl-decimal.js');
 var b = new BigEval();
 console.log(b.exec('-2 + 3'));
