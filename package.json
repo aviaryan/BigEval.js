@@ -1,0 +1,25 @@
+{
+  "name": "bigeval",
+  "version": "0.0.1",
+  "description": "Mathematical expression solving library. Test Node builds. Don't install.",
+  "main": "BigEval.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aviaryan/BigEval.js.git"
+  },
+  "keywords": [
+    "arithmetic",
+    "eval",
+    "expressions",
+    "parser"
+  ],
+  "author": "Avi Aryan",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/aviaryan/BigEval.js/issues"
+  },
+  "homepage": "https://github.com/aviaryan/BigEval.js#readme"
+}
