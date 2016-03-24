@@ -4,7 +4,7 @@
   "description": "Mathematical expression solving library",
   "main": "BigEval.js",
   "scripts": {
-    "test": "nodeunit tests"
+    "test": "nodeunit tests/testmain.js tests/testdecimal.js"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,4 @@
-var BigEval = require('../BigEval.js');
+var DecimalBigEval = require('../extensions/MikeMcl-decimal.js');
 var cf = require('./common.js');
 
 /**
@@ -6,7 +6,7 @@ var cf = require('./common.js');
  */
 exports.testBasics = {
 	setUp: function(callback){
-		this.b = new BigEval();
+		this.b = new DecimalBigEval();
 		callback();
 	},
 
@@ -27,19 +27,9 @@ exports.testBasics = {
 };
 
 /**
- * test basic expressions
- * @param test
- */
-exports.testBasic = function(test){
-	var b = new BigEval();
-	test.equals(b.exec("12+45*10"), ''+462);
-	test.done();
-};
-
-/**
  * Batch auto tests
  * @param test
  */
 exports.testBatch = function(test){
-	cf.autoTest(test, new BigEval());
+	cf.autoTest(test, new DecimalBigEval());
 };
