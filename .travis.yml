@@ -9,7 +9,9 @@ node_js:
   - "0.12"
 install:
   - npm install nodeunit -g
+  # below modules required for testing decimal.js
   - npm install decimal.js
+  - npm install bigeval -g
 script: npm test
 branches:
   only:
