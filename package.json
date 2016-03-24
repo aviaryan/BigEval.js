@@ -1,6 +1,6 @@
 {
   "name": "bigeval",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Mathematical expression solving library",
   "main": "BigEval.js",
   "scripts": {
