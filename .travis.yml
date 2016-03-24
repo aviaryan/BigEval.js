@@ -11,8 +11,9 @@ install:
   - npm install nodeunit -g
   # below modules required for testing decimal.js
   - npm install decimal.js
-  - npm install bigeval -g
-script: npm test
+script:
+  - npm test
+  - nodeunit tests/testdecimal.js
 branches:
   only:
     - gh-pages
