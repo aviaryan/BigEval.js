@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/dm/bigeval.svg)]()
 [![npm](https://img.shields.io/npm/l/bigeval.svg)]()
 
-An alternative to JavaScript's eval() for solving mathematical expressions. It can be extended to use the *Big Number* libraries available to provide results with maximum precision. See [Releases](https://github.com/aviaryan/BigEval.js/releases) for compressed script (~4kb) download.
+An alternative to JavaScript's eval() for solving mathematical expressions. It can be extended to use the *Big Number* libraries available to provide results with maximum precision.
 
 
 ### Installation
@@ -32,7 +32,7 @@ npm install bigeval
 
 ### Using
 
-After including *BigEval.js*, the first step is to get a handle to the BigEval object. Then we can use the `exec()` method to solve a expression. See [project page](http://aviaryan.in/BigEval.js/index.html) for a working example.
+After including *BigEval.js*, the first step is to create an instance of BigEval. Then we can use the `exec()` method to solve an expression. See [project page](http://aviaryan.in/BigEval.js/index.html) for a working example.
 ```javascript
 var Obj = new BigEval();
 var result = Obj.exec("5! + 1e3 * (PI + E)"); // 5979.874482048837
@@ -59,10 +59,11 @@ Or (|)
 
 ### Functions
 
-BigEval supports functions like sin(), cos() ... When a function is used in an expression, BigEval first looks into its methods to see if such a function exist, then it looks into the JavaScript `Math()` library and in the end it looks into window's global namespace for the function.
+BigEval supports functions like sin(), cos() ... When a function is used in an expression, BigEval first looks into its methods to see if such a function exist, then it looks into the JavaScript's **Math** library and in the end it looks into window's global namespace for the function.
 Please note that we use just `sin()` and not `Math.sin()` in expressions. Attaching a new function to BigEval is easy.
 ```javascript
-BigEval.prototype.avg = function(a, b){
+var Obj = new BigEval();
+Obj.prototype.avg = function(a, b){
     return this.div( this.add(a,b) , "2");
 };
 ```
@@ -71,7 +72,13 @@ BigEval.prototype.avg = function(a, b){
 ### Constants
 
 Constants are nothing but properties of the BigEval object. To use a constant such as PI in an expression, we can simply write `PI`. Example - `sin( PI / 4 )`.
-To add a new constant, we do `Obj.CONSTANT.NAME = VALUE`. The VALUE should be in **string format**. A constant NAME should start with an alphabet and should only use `[a-z0-9_]` characters. Default constants include - 
+To add a new constant, we do `Obj.CONSTANT.NAME = VALUE`. The VALUE should be in **string format**.
+```js
+Obj.CONSTANT.INTOCM = '2.54'; // inch to cm
+console.log(Obj.exec('12 * intocm')); // the case doesn't matter in expressions
+``` 
+
+A constant NAME should start with an alphabet and should only use `[a-zA-Z0-9_]` characters. Default constants include - 
 ```ini
 PI = 3.1415...
 PI_2 = PI / 2
