@@ -9,6 +9,7 @@ node_js:
   - "0.12"
 install:
   - npm install nodeunit -g
+  - npm install decimal.js
 script: npm test
 branches:
   only:
