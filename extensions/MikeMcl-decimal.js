@@ -11,14 +11,7 @@ function p(s){
 // import decimal module in case of node
 if (typeof module !== 'undefined' && typeof exports !== 'undefined'){
 	var Decimal = require('decimal.js');
-	// check for BigEval
-	var BigEval;
-	try {
-		require.resolve('bigeval');
-		BigEval = require('bigeval');
-	} catch (e) {
-		BigEval = require('../BigEval.js');
-	}
+	var BigEval = require('bigeval');
 }
 
 // override methods

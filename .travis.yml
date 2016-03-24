@@ -9,11 +9,8 @@ node_js:
   - "0.12"
 install:
   - npm install nodeunit -g
-  # below modules required for testing decimal.js
-  - npm install decimal.js
 script:
   - npm test
-  - nodeunit tests/testdecimal.js
 branches:
   only:
     - gh-pages
