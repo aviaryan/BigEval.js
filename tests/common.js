@@ -4,9 +4,9 @@
  */
 function roundStr(s, places){
 	var posDec = s.indexOf('.');
-	if (posDec == -1)
+	if (posDec === -1) {
 		return s;
-	else {
+	} else {
 		var sRounded;
 		if (places <= 0){
 			sRounded = s.substr(0, posDec);
@@ -33,14 +33,16 @@ function autoTest(test, b){
 
 	for (var i = 0; i<l; i++){
 		sz = Math.floor((Math.random() * m + 3));
-		if (sz % 2 == 0)
-			sz ++;
+		if (sz % 2 === 0) {
+			sz++;
+		}
 		exp = "";
 		for (j = 0; j < sz; j++){ // build exp
-			if (j%2==0)
+			if (j%2 === 0) {
 				exp += Math.floor(Math.random() * 20 - 9); // -9
-			else
-				exp += ops[ Math.floor(Math.random() * 8) ];
+			} else {
+				exp += ops[Math.floor(Math.random() * 8)];
+			}
 		}
 		exp = b.plusMinus(exp);
 
