@@ -2,3 +2,5 @@ node_modules/
 *~
 test.js
 *.min.js
+coverage/
+workspace.xml

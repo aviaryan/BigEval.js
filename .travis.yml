@@ -9,8 +9,9 @@ node_js:
   - "0.12"
 install:
   - npm install nodeunit -g
+  - npm install istanbul -g
 script:
-  - npm test
+  - istanbul cover nodeunit tests/testmain.js
 branches:
   only:
     - gh-pages
