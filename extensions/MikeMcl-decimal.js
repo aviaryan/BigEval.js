@@ -8,58 +8,63 @@ function p(s){
 	return s[0] == '+' ? s.substr(1) : s;
 }
 
+var _decimal, _bigeval;
+
 // import decimal module in case of node
 if (typeof module !== 'undefined' && typeof exports !== 'undefined'){
-	var Decimal = require('decimal.js');
-	var BigEval = require('bigeval');
+	_decimal = require('decimal.js');
+	_bigeval = require('bigeval');
+} else {
+	_decimal = Decimal;
+	_bigeval = BigEval;
 }
 
 // override methods
-BigEval.prototype.add = function(a, b){
-	return new Decimal(p(a)).plus(p(b));
+_bigeval.prototype.add = function(a, b){
+	return new _decimal(p(a)).plus(p(b));
 };
 
-BigEval.prototype.sub = function(a, b){
-	return new Decimal(p(a)).minus(p(b));
+_bigeval.prototype.sub = function(a, b){
+	return new _decimal(p(a)).minus(p(b));
 };
 
-BigEval.prototype.mul = function(a, b){
-	return new Decimal(p(a)).times(p(b));
+_bigeval.prototype.mul = function(a, b){
+	return new _decimal(p(a)).times(p(b));
 };
 
-BigEval.prototype.div = function(a, b){
-	return new Decimal(p(a)).dividedBy(p(b));
+_bigeval.prototype.div = function(a, b){
+	return new _decimal(p(a)).dividedBy(p(b));
 };
 
-BigEval.prototype.pow = function(a, b){
-	return new Decimal(p(a)).pow(p(b));
+_bigeval.prototype.pow = function(a, b){
+	return new _decimal(p(a)).pow(p(b));
 };
 
-BigEval.prototype.mod = function(a, b){
-	return new Decimal(p(a)).modulo(p(b));
+_bigeval.prototype.mod = function(a, b){
+	return new _decimal(p(a)).modulo(p(b));
 };
 
 // Extra methods
 
-BigEval.prototype.sqrt = function(a){
-	return new Decimal(p(a)).sqrt();
+_bigeval.prototype.sqrt = function(a){
+	return new _decimal(p(a)).sqrt();
 };
 
-BigEval.prototype.log = function(a){
-	return new Decimal(p(a)).log();
+_bigeval.prototype.log = function(a){
+	return new _decimal(p(a)).log();
 };
 
-BigEval.prototype.ln = function(a){
-	return new Decimal(p(a)).ln();
+_bigeval.prototype.ln = function(a){
+	return new _decimal(p(a)).ln();
 };
 
-BigEval.prototype.exp = function(a){
-	return new Decimal(p(a)).exp();
+_bigeval.prototype.exp = function(a){
+	return new _decimal(p(a)).exp();
 };
 
 /*
  * Export module
  */
 if (typeof module !== 'undefined' && module.exports && typeof exports !== 'undefined'){
-	module.exports = BigEval;
+	module.exports = _bigeval;
 }
