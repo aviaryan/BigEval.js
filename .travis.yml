@@ -10,9 +10,12 @@ node_js:
 install:
   - npm install nodeunit -g
   - npm install istanbul -g
+  - npm install codecov -g
 script:
   - istanbul cover nodeunit tests/testmain.js
 branches:
   only:
     - gh-pages
     - master
+after_success:
+  codecov -t $CODECOV_TOKEN
