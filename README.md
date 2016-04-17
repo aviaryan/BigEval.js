@@ -1,6 +1,7 @@
 # BigEval.js
 
 [![Build Status](https://travis-ci.org/aviaryan/BigEval.js.svg?branch=gh-pages)](https://travis-ci.org/aviaryan/BigEval.js)
+[![codecov.io](https://codecov.io/github/aviaryan/BigEval.js/coverage.svg?branch=gh-pages)](https://codecov.io/github/aviaryan/BigEval.js?branch=gh-pages)
 [![npm](https://img.shields.io/npm/v/bigeval.svg)](https://www.npmjs.com/package/bigeval)
 [![npm](https://img.shields.io/npm/dm/bigeval.svg)](https://www.npmjs.com/package/bigeval)
 [![npm](https://img.shields.io/npm/l/bigeval.svg)]()
