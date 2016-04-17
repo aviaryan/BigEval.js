@@ -43,7 +43,7 @@ BigEval.prototype.exec = function(s){
 	s = s.replace(/\*\*/g, '@');
 
 	// validate missing operator
-	var misOperator = /[a-z0-9][ \t]+[a-z0-9\.]/ig, p;
+	var misOperator = /[a-z0-9][ \t]+[a-z0-9\.]/ig;
 	if (misOperator.exec(s)){
 		this.err = 1;
 		return this.errMsg = this.errMS + misOperator.lastIndex;
@@ -59,7 +59,7 @@ BigEval.prototype.exec = function(s){
 	s = this.plusMinus( s.replace(/[ \t]/g, '') );
 
 	s = this.solve(s);
-	if (s.charAt(0) == '+')
+	if (s.charAt(0) === '+')
 		s = s.slice(1);
 	return s;
 };
@@ -76,16 +76,17 @@ BigEval.prototype.solve = function(s){
 
 	s = this.addPlusSign(s);
 	var ob = s.indexOf('('), cb, fname, freturn;
+	var i;
 
 	// if bracket present, work on them
-	while (ob != -1){
+	while (ob !== -1){
 		var obct = 1;
-		for (var i = ob+1; i < s.length; i++){
+		for (i = ob+1; i < s.length; i++){
 			if (s[i] == '(')
 				obct++;
-			else if (s[i] == ')'){
+			else if (s[i] === ')'){
 				obct--;
-				if (obct == 0){
+				if (obct === 0){
 					cb = i;
 					break;
 				}
@@ -107,12 +108,12 @@ BigEval.prototype.solve = function(s){
 	}
 
 	// check for comma - then function throw it back
-	if (s.indexOf(',') != -1)
+	if (s.indexOf(',') !== -1)
 		return this.addPlusSign(s);
 
 	// solve expression (no brackets exist)
 	var p, bp, ap, seg, c, cs, isAddOn=0, b, a;
-	for (var i = 0; i < this.order.length; i++){
+	for (i = 0; i < this.order.length; i++){
 
 		cs = this.order[i];
 		if (cs == '+-'){ // resolve +- made due to bracket solving
@@ -191,7 +192,7 @@ BigEval.prototype.solve = function(s){
 
 BigEval.prototype.validate = function(s){
 	// checks expression for errors
-	var stack = [], err = 0;
+	var stack = [];
 
 	for ( var i = 0; i < s.length; i++ ){
 		if ( s[i] == '(' )
