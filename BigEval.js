@@ -41,8 +41,10 @@ var BigEval = function(){
 	a.LOG2E = Math.LOG2E;
 	a.DEG = a.PI / 180;
 	a.E = Math.E;
-	a.INFINITY = "Infinity";
-	a.NaN = "NaN";
+	a.Infinity = Infinity;
+	a.NaN = NaN;
+	a.true = true;
+	a.false = false;
 };
 
 
@@ -293,18 +295,10 @@ BigEval.prototype.parseVar = function(s){
 		
 		var c;
 		
-		if (z[0] === 'true')
-			c = true;
-		else if (z[0] === 'false')
-			c = false;
-		else if (z[0] === 'NaN')
-			c = NaN;
-		else if (z[0] === 'Infinity')
-			c = Infinity;
-		else if (typeof this.CONSTANT[z[0].toUpperCase()] !== 'undefined')
-			c = this.CONSTANT[ z[0].toUpperCase() ];
+		if (typeof this.CONSTANT[z[0].toUpperCase()] !== 'undefined')
+			c = this.CONSTANT[z[0].toUpperCase()];
 		else if (typeof this.CONSTANT[z[0]] !== 'undefined')
-			c = this.CONSTANT[ z[0] ];
+			c = this.CONSTANT[z[0]];
 		else
 			return this.makeError(this.errVD + z[0]);
 		
