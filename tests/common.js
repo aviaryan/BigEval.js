@@ -1,23 +1,5 @@
 
 /**
- * Function to round (truncate) a string number to certain places
- */
-function roundStr(s, places){
-	var posDec = s.indexOf('.');
-	if (posDec === -1) {
-		return s;
-	} else {
-		var sRounded;
-		if (places <= 0){
-			sRounded = s.substr(0, posDec);
-		} else {
-			sRounded = s.substr(0, posDec+1+places);
-		}
-		return sRounded;
-	}
-}
-
-/**
  * Batch test BigEval over randomly generated expressions
  * Compared with eval()'s output
  * @param test
@@ -48,14 +30,13 @@ function autoTest(test, b){
 
 		r1 = b.exec(exp);
 		r2 = eval(exp);
-		if (r1 != r2){
-			if ( Math.abs(Number(r1)-r2) > 0.1 ){ // precision
-				console.log(i + " exp=  " + exp + " bigeval= " + r1 + " real= " + r2);
-				test.equals(0,1);
-				test.done();
-				break;
-			}
-		}
+        
+        if (r1 !== r2 && (!isNaN(r1) || !isNaN(r2))) { // precision
+            console.log(i + " exp=  " + exp + " bigeval= " + r1 + " real= " + r2);
+            test.equals(r1, r2);
+            test.done();
+            break;
+        }
 	}
 	test.equals(1,1);
 	test.done();
@@ -65,5 +46,4 @@ function autoTest(test, b){
 /**
  * Export
  */
-exports.roundStr = roundStr;
 exports.autoTest = autoTest;
