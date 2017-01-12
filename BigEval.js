@@ -24,7 +24,7 @@ var BigEval = function(){
 				['+', '-'],
 				['<<', '>>'],
 				['<', '<=', '>', '>='], 
-				['==', '!='], 
+				['==', '=', '!='], 
 				['&'], ['^'], ['|'], 
 				['&&'], ['||']
                 ];
@@ -198,7 +198,7 @@ BigEval.prototype.solve = function(s){
 					seg = this.greaterThan( b , a );
 				else if (op === '>=')
 					seg = this.greaterThanOrEqualsTo( b , a );
-				else if (op === '==')
+				else if (op === '==' || op === '=')
 					seg = this.equalsTo( b , a );
 				else if (op === '!=')
 					seg = this.notEqualsTo( b , a );
