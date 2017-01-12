@@ -315,16 +315,38 @@ BigEval.prototype.parseVar = function(s){
 		return Number(s);
 };
 
+BigEval.prototype.opAtPosition = function(s, p) {
+    var op = '';
+    
+    for (var j = 0, jlen = this.flatOps.length; j < jlen; j++) {
+        var item = this.flatOps[j];
+        
+        if (op === item || item.length <= op.length)
+            continue;
+        
+        if (s.substr(p, item.length) === item) {
+            op = item;
+        }
+    }
+    
+    return op;
+};
+
 BigEval.prototype.leastIndexOf = function(s, cs, sp){
-	var l = -1, p, m, item, j, jlen = this.flatOps.length, jop;
+	var l = -1, p, m, item, j, jlen = this.flatOps.length, op;
 
 	for (var i = 0; i < cs.length; i++){
 		item = cs[i];
 		p = s.indexOf(item, sp);
 
+        // If it's the wrong op because it's shorter, look further
+        while (p !== -1 && (op = this.opAtPosition(s, p)) !== item) {
+            p = s.indexOf(item, p + op.length);
+        }
+        
 		if (p == -1)
 			continue;
-
+        
 		// Avoid taking partial op when longer ops are available
 		for (j = 0; j < jlen; j++) {
 			jop = this.flatOps[j];
@@ -340,6 +362,7 @@ BigEval.prototype.leastIndexOf = function(s, cs, sp){
 			m = item;
 		}
 	}
+    
 	return [l, m];
 };
 
