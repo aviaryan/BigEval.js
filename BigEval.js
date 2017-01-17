@@ -306,13 +306,12 @@ BigEval.prototype.parseVar = function(s){
 			return c;
 		
         // Safeguard to always work with numbers
-		if (typeof c !== 'number')
-			c = Number(c);
+        c = this.number((typeof c === 'string' && c[0] === '+') ? c.substr(1) : c);
 		
 		return sign ? -c : c;
 	}
 	else
-		return Number(s);
+		return this.number((typeof s === 'string' && s[0] === '+') ? s.substr(1) : s);
 };
 
 BigEval.prototype.opAtPosition = function(s, p) {
@@ -384,6 +383,10 @@ BigEval.prototype.makeError = function(msg){
 /**
  * Extension functions
  */
+
+BigEval.prototype.number = function(str){
+    return Number(str);
+};
 
 BigEval.prototype.add = function(a, b){ 
 	return a + b; 
