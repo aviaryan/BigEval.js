@@ -20,6 +20,11 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined'){
 }
 
 // override methods
+
+_bigeval.prototype.number = function(str){
+	return (str instanceof Decimal) ? str : new Decimal(str);
+};
+
 _bigeval.prototype.add = function(a, b){
 	return new _decimal(p(a)).plus(p(b));
 };
@@ -40,8 +45,66 @@ _bigeval.prototype.pow = function(a, b){
 	return new _decimal(p(a)).pow(p(b));
 };
 
+_bigeval.prototype.lessThan = function(a, b){
+	return a.lessThan(b);
+};
+
+_bigeval.prototype.lessThanOrEqualsTo = function(a, b){
+	return a.lessThanOrEqualTo(b);
+};
+
+_bigeval.prototype.greaterThan = function(a, b){
+	return a.greaterThan(b);
+};
+
+_bigeval.prototype.greaterThanOrEqualsTo = function(a, b){
+	return a.greaterThanOrEqualTo(b);
+};
+
+_bigeval.prototype.equalsTo = function(a, b){
+	return a.equals(b);
+};
+
+_bigeval.prototype.notEqualsTo = function(a, b){
+	return !a.equals(b);
+};
+
+_bigeval.prototype.logicalAnd = function(a, b){
+    if (!a || ((a instanceof Decimal) && a.equals(0)))
+        return a;
+    
+    return b;
+};
+
+_bigeval.prototype.logicalOr = function(a, b){
+    if (!a || ((a instanceof Decimal) && a.equals(0)))
+        return b;
+    
+    return a;
+};
+
 _bigeval.prototype.mod = function(a, b){
 	return new _decimal(p(a)).modulo(p(b));
+};
+
+_bigeval.prototype.shiftLeft = function(a, b){
+	return a << b;
+};
+
+_bigeval.prototype.shiftRight = function(a, b){
+	return a >> b;
+};
+
+_bigeval.prototype.and = function(a, b){
+	return a & b;
+};
+
+_bigeval.prototype.xor = function(a, b){
+	return a ^ b;
+};
+
+_bigeval.prototype.or = function(a, b){
+	return a | b;
 };
 
 // Extra methods

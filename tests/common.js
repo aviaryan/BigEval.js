@@ -1,23 +1,5 @@
 
 /**
- * Function to round (truncate) a string number to certain places
- */
-function roundStr(s, places){
-	var posDec = s.indexOf('.');
-	if (posDec === -1) {
-		return s;
-	} else {
-		var sRounded;
-		if (places <= 0){
-			sRounded = s.substr(0, posDec);
-		} else {
-			sRounded = s.substr(0, posDec+1+places);
-		}
-		return sRounded;
-	}
-}
-
-/**
  * Batch test BigEval over randomly generated expressions
  * Compared with eval()'s output
  * @param test
@@ -29,32 +11,44 @@ function autoTest(test, b){
 	var m = 15; // max size of expression
 
 	var sz, j, exp, r1, r2;
-	var ops = "+-/*&^|%"; // 7 (mod can be problem, - divide)
+	var ops = [
+		'/', '*', '%',
+		'+', '-',
+		'<<', '>>',
+		'<', '<=', '>', '>=',
+		'==', '!=',
+		'&', '^', '|',
+		'&&', '||'];
+        
+	try {
+		eval('1**2'); // Check if current runtime support ** operator
+		ops.push('**');
+	} catch (e) {}
 
 	for (var i = 0; i<l; i++){
 		sz = Math.floor((Math.random() * m + 3));
 		if (sz % 2 === 0) {
 			sz++;
 		}
+
 		exp = "";
 		for (j = 0; j < sz; j++){ // build exp
 			if (j%2 === 0) {
 				exp += Math.floor(Math.random() * 20 - 9); // -9
 			} else {
-				exp += ops[Math.floor(Math.random() * 8)];
+				exp += ops[Math.floor(Math.random() * ops.length)];
 			}
 		}
-		exp = b.plusMinus(exp);
+		exp = b.plusMinus(exp); // Normalize doubles (--, ++) as eval will consider as postfix/prefix operations
 
 		r1 = b.exec(exp);
 		r2 = eval(exp);
-		if (r1 != r2){
-			if ( Math.abs(Number(r1)-r2) > 0.1 ){ // precision
-				console.log(i + " exp=  " + exp + " bigeval= " + r1 + " real= " + r2);
-				test.equals(0,1);
-				test.done();
-				break;
-			}
+		
+		if (r1 !== r2 && (!isNaN(r1) || !isNaN(r2))) { // precision
+			console.log(i + " exp=  " + exp + " bigeval= " + r1 + " real= " + r2);
+			test.equals(r1, r2);
+			test.done();
+			break;
 		}
 	}
 	test.equals(1,1);
@@ -65,5 +59,4 @@ function autoTest(test, b){
 /**
  * Export
  */
-exports.roundStr = roundStr;
 exports.autoTest = autoTest;

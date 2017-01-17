@@ -9,15 +9,31 @@ var BigEval = function(){
 	this.errMsg = "";
 	this.errBR = "IMPROPER_BRACKETS";
 	this.errMS = "MISSING_OPERATOR_AT_";
-	this.errMN = "MISSING_OPERAND_AT_";
+	this.errMN = "MISSING_OPERAND";
 	this.errIC = "INVALID_CHAR_AT_";
 	this.errFN = "INVALID_FUNCTION_";
 	this.errVD = "UNDEFINED_VARIABLE_";
 	this.errFL = "FUNCTION_LIMIT_EXCEEDED_BY_";
 
-	this.order = ['!' , '@' , '\\/*%' , '+-' , '&' , '^' , '|'];
 	// https://en.wikipedia.org/wiki/Order_of_operations#Programming_languages
 
+	this.order = [
+				['!'],
+				['**'],
+				['\\', '/', '*', '%'],
+				['+', '-'],
+				['<<', '>>'],
+				['<', '<=', '>', '>='], 
+				['==', '=', '!='], 
+				['&'], ['^'], ['|'], 
+				['&&'], ['||']
+                ];
+
+	this.flatOps = [];
+	for (var i = 0; i < this.order.length; i++) {
+		this.flatOps = this.flatOps.concat(this.order[i]);
+	}
+	
 	// CONSTANTS
 	var a = this.CONSTANT = {};
 	a.PI = Math.PI;
@@ -25,8 +41,10 @@ var BigEval = function(){
 	a.LOG2E = Math.LOG2E;
 	a.DEG = a.PI / 180;
 	a.E = Math.E;
-	a.INFINITY = "Infinity";
-	a.NaN = "NaN";
+	a.Infinity = Infinity;
+	a.NaN = NaN;
+	a.true = true;
+	a.false = false;
 };
 
 
@@ -34,33 +52,22 @@ BigEval.prototype.exec = function(s){
 	this.err = 0;
 	this.errMsg = "";
 
-	// validate brackets
-	this.validate(s);
-	if (this.err)
-		return this.errMsg;
-
-	// replace ** by @
-	s = s.replace(/\*\*/g, '@');
-
 	// validate missing operator
-	var misOperator = /[a-z0-9][ \t]+[a-z0-9\.]/ig;
+	var misOperator = /[a-z0-9][\s\uFEFF\xA0]+[a-z0-9\.]/ig;
 	if (misOperator.exec(s)){
 		this.err = 1;
 		return this.errMsg = this.errMS + misOperator.lastIndex;
 	}
 
-	// validate missing operand
-	var misOperands = /[\+\-\\\/\*\@\%\&\^\|][ \t]*([\\\/\*\@\!\%\&\^\|\)]|$)/g;
-	if (misOperands.exec(s)){
-		this.err = 1;
-		return this.errMsg = this.errMN + misOperands.lastIndex;
-	}
-
-	s = this.plusMinus( s.replace(/[ \t]/g, '') );
-
+	// validate brackets
+	this.validate(s);
+	if (this.err)
+		return this.errMsg;
+		
+	s = this.plusMinus( s.replace(/[\s\uFEFF\xA0]/g, '') );
+	
 	s = this.solve(s);
-	if (s.charAt(0) === '+')
-		s = s.slice(1);
+	
 	return s;
 };
 
@@ -110,28 +117,32 @@ BigEval.prototype.solve = function(s){
 	// check for comma - then function throw it back
 	if (s.indexOf(',') !== -1)
 		return this.addPlusSign(s);
-
+	
 	// solve expression (no brackets exist)
-	var p, bp, ap, seg, c, cs, isAddOn=0, b, a;
+	var p, bp, ap, seg, cs, isAddOn=0, b, a, op;
 	for (i = 0; i < this.order.length; i++){
 
 		cs = this.order[i];
-		if (cs == '+-'){ // resolve +- made due to bracket solving
+		if (cs[0] === '+'){ // resolve +- made due to bracket solving
 			s = this.plusMinus(s);
 			isAddOn = 1;
 		}
 
 		p = this.leastIndexOf(s, cs, 1);
-
+		op = p[1];
+		p = p[0];
+		
 		while (p > 0){ // the first is sign, no need to take that
-			bp = s.slice(0,p).match(/[\-\+]*(\de\-|\de\+|[a-z0-9_\.])+$/i); // kepp e-,e+ before other regex to have it matched
+			bp = s.slice(0,p).match(/[\-\+]*(\de\-|\de\+|[a-z0-9_\.])+$/i); // keep e-,e+ before other regex to have it matched
 			// & ^ | are after + in priority so they dont need be above
-			ap = s.slice(p+1).match(/[\-\+]*(\de\-|\de\+|[a-z0-9_\.])+/i);
+			ap = s.slice(p+op.length).match(/[\-\+]*(\de\-|\de\+|[a-z0-9_\.])+/i);
 			if (ap == null)
 				ap = [""];
 
 			if (bp == null){ // 12 & -20 - here -20 is sign.. bp of it is null . ignore it
-				p = this.leastIndexOf(s, cs, p+1);
+				p = this.leastIndexOf(s, cs, p+op.length);
+				op = p[1];
+				p = p[0];
 				continue;
 			}
 			if (!isAddOn) // slice the extra +- sign that is not for number
@@ -141,53 +152,82 @@ BigEval.prototype.solve = function(s){
 			if (isAddOn) // +- only ignore 1e-7
 				if ( bp[0].charAt(bp[0].length - 1) == 'e' )
 					if ( bp[0].charAt(bp[0].length - 2).match(/\d/) ){ // is number
-						p = this.leastIndexOf(s, cs, p+1);
+						p = this.leastIndexOf(s, cs, p+op.length);
+						op = p[1];
+						p = p[0];
 						continue;
 					}
-
-			// look for variables
-			c = s.charAt(p);
-			//alert(bp[0] + s.charAt(p) + ap[0]);
-			b = this.parseVar( this.plusMinus(bp[0]) ); a = this.parseVar( this.plusMinus(ap[0]) );
+		
+			b = this.plusMinus(bp[0]);
+			a = this.plusMinus(ap[0]);
+			
+			if (b === '' || a === '') {
+				return this.makeError(this.errMN);
+			}
+			
+			b = this.parseVar(b);
+			a = this.parseVar(a);
+			
 			if (this.err)
 				return this.errMsg;
 
-			if (c == '!'){
+			if (op == '!'){
 				if ( bp[0].charAt(0) == '+' || bp[0].charAt(0) == '-' )
 					bp[0] = bp[0].slice(1);
 				b = this.parseVar(bp[0]);
 				seg = this.fac( b ) + "";
 				ap = [""]; // to avoid latter segment from being affected (unary operator)
 			} else {
-				if (c == '/' || c == '\\')
+				if (op === '/' || op === '\\')
 					seg = this.div( b , a );
-				else if (c == '*')
+				else if (op === '*')
 					seg = this.mul( b , a );
-				else if (c == '+')
+				else if (op === '+')
 					seg = this.add( b , a );
-				else if (c == '-')
+				else if (op === '-')
 					seg = this.sub( b , a );
-				else if (c == '@')
+				else if (op === '<<')
+					seg = this.shiftLeft( b , a );
+				else if (op === '>>')
+					seg = this.shiftRight( b , a );
+				else if (op === '<')
+					seg = this.lessThan( b , a );
+				else if (op === '<=')
+					seg = this.lessThanOrEqualsTo( b , a );
+				else if (op === '>')
+					seg = this.greaterThan( b , a );
+				else if (op === '>=')
+					seg = this.greaterThanOrEqualsTo( b , a );
+				else if (op === '==' || op === '=')
+					seg = this.equalsTo( b , a );
+				else if (op === '!=')
+					seg = this.notEqualsTo( b , a );
+				else if (op === '**')
 					seg = this.pow( b , a );
-				else if (c == '%')
+				else if (op === '%')
 					seg = this.mod( b , a );
-				else if (c == '&')
+				else if (op === '&')
 					seg = this.and( b , a );
-				else if (c == '^')
+				else if (op === '^')
 					seg = this.xor( b , a );
-				else if (c == '|')
-					seg = this.or(  b , a );
+				else if (op === '|')
+					seg = this.or(	b , a );
+				else if (op === '&&')
+					seg = this.logicalAnd(	b , a );
+				else if (op === '||')
+					seg = this.logicalOr(	b , a );
 
 				seg = this.addPlusSign(seg + "");
 			}
-			s = s.slice(0, p-bp[0].length) + seg + s.slice(p+ap[0].length+1);
-			p = this.leastIndexOf(s, cs, 1); 
-			//alert(s);
+			s = s.slice(0, p-bp[0].length) + seg + s.slice(p+ap[0].length+op.length);
+			p = this.leastIndexOf(s, cs, 1);
+			op = p[1];
+			p = p[0];
 		}
 	}
 
 	s = this.addPlusSign(s);
-	return this.parseVar(s);
+	return s === '' ? NaN : this.parseVar(s);
 };
 
 BigEval.prototype.validate = function(s){
@@ -245,36 +285,84 @@ BigEval.prototype.solveFunc = function(s, fname){
 
 BigEval.prototype.parseVar = function(s){
 	var z;
-	//console.log(s);
-	if (z = s.match(/^[\+\-]?[a-z][a-z0-9_]*$/i)){
-		var zs="";
-		if (z[0].charAt(0) == '-' || z[0].charAt(0) == '+'){
-			zs = z[0].slice(0,1);
+		
+	if (z = s.match(/^[\+\-]?[a-z][a-z0-9_]*$/i)) {
+        var sign = false;
+		if (z[0][0] == '-' || z[0][0] == '+'){
+            sign = z[0][0] === '-';
 			z[0] = z[0].slice(1);
 		}
+		
+		var c;
+		
 		if (typeof this.CONSTANT[z[0].toUpperCase()] !== 'undefined')
-			return zs + this.CONSTANT[ z[0].toUpperCase() ];
+			c = this.CONSTANT[z[0].toUpperCase()];
 		else if (typeof this.CONSTANT[z[0]] !== 'undefined')
-			return zs + this.CONSTANT[ z[0] ];
+			c = this.CONSTANT[z[0]];
 		else
 			return this.makeError(this.errVD + z[0]);
+		
+		if (typeof c === 'boolean')
+			return c;
+		
+        // Safeguard to always work with numbers
+        c = this.number((typeof c === 'string' && c[0] === '+') ? c.substr(1) : c);
+		
+		return sign ? -c : c;
 	}
 	else
-		return s;
+		return this.number((typeof s === 'string' && s[0] === '+') ? s.substr(1) : s);
+};
+
+BigEval.prototype.opAtPosition = function(s, p) {
+    var op = '';
+    
+    for (var j = 0, jlen = this.flatOps.length; j < jlen; j++) {
+        var item = this.flatOps[j];
+        
+        if (op === item || item.length <= op.length)
+            continue;
+        
+        if (s.substr(p, item.length) === item) {
+            op = item;
+        }
+    }
+    
+    return op;
 };
 
 BigEval.prototype.leastIndexOf = function(s, cs, sp){
-	var l = -1, p;
-	for (var i=0; i<cs.length; i++){
-		p = s.indexOf(cs[i], sp);
-		if (p==-1)
+	var l = -1, p, m, item, j, jlen = this.flatOps.length, op;
+
+	for (var i = 0; i < cs.length; i++){
+		item = cs[i];
+		p = s.indexOf(item, sp);
+
+        // If it's the wrong op because it's shorter, look further
+        while (p !== -1 && (op = this.opAtPosition(s, p)) !== item) {
+            p = s.indexOf(item, p + op.length);
+        }
+        
+		if (p == -1)
 			continue;
-		if (l==-1)
-			l=p;
-		else if (p<l)
-			l=p;
+        
+		// Avoid taking partial op when longer ops are available
+		for (j = 0; j < jlen; j++) {
+			jop = this.flatOps[j];
+			if (jop === item || jop.length <= item.length) continue;
+			if (s.substr(p, jop.length) === jop) {
+				p = -1;
+				break;
+			}
+		}
+
+		if (l == -1 || p < l) {
+			l = p;
+			m = item;
+		}
 	}
-	return l;
+    
+	return [l, m];
 };
 
 BigEval.prototype.plusMinus = function(s){
@@ -292,53 +380,95 @@ BigEval.prototype.makeError = function(msg){
 	return this.errMsg = msg;
 };
 
-
 /**
  * Extension functions
  */
 
+BigEval.prototype.number = function(str){
+    return Number(str);
+};
+
 BigEval.prototype.add = function(a, b){ 
-	return Number(a)+Number(b); 
+	return a + b; 
 };
 
 BigEval.prototype.sub = function(a, b){
-	return Number(a)-Number(b);
+	return a - b;
 };
 
 BigEval.prototype.mul = function(a, b){
-	return Number(a)*Number(b);
+	return a * b;
 };
 
 BigEval.prototype.div = function(a, b){
-	return Number(a)/Number(b);
+	return a / b;
 };
 
 BigEval.prototype.pow = function(a, b){
-	return Math.pow(Number(a), Number(b));
+	return Math.pow(a, b);
+};
+
+BigEval.prototype.lessThan = function(a, b){
+	return a < b;
+};
+
+BigEval.prototype.lessThanOrEqualsTo = function(a, b){
+	return a <= b;
+};
+
+BigEval.prototype.greaterThan = function(a, b){
+	return a > b;
+};
+
+BigEval.prototype.greaterThanOrEqualsTo = function(a, b){
+	return a >= b;
+};
+
+BigEval.prototype.equalsTo = function(a, b){
+	return a == b;
+};
+
+BigEval.prototype.notEqualsTo = function(a, b){
+	return a != b;
+};
+
+BigEval.prototype.logicalAnd = function(a, b){
+	return a && b;
+};
+
+BigEval.prototype.logicalOr = function(a, b){
+	return a || b;
 };
 
 BigEval.prototype.fac = function(n){
-	var s = "1";
-	n = Number(n);
+	var s = 1;
 	for (var i = 2; i <= n; i++)
 		s = this.mul(s, i);
 	return s;
 };
 
 BigEval.prototype.mod = function(a, b){
-	return Number(a)%Number(b);
+	return a % b;
+};
+
+BigEval.prototype.shiftLeft = function(a, b){
+	return a << b;
+};
+
+BigEval.prototype.shiftRight = function(a, b){
+	return a >> b;
 };
 
 BigEval.prototype.and = function(a, b){
-	return Number(a) & Number(b);
+	return a & b;
 };
 
 BigEval.prototype.xor = function(a, b){
-	return Number(a) ^ Number(b);
+	return a ^ b;
 };
 
 BigEval.prototype.or = function(a, b){
-	return Number(a) | Number(b);
+	return a | b;
 };
 
 
