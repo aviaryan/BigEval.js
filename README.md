@@ -28,7 +28,7 @@ npm install bigeval
 ### Features
 
 * Full BODMAS/PEMDAS support (just like `Eval`).
-* Factorial (!), Power (**), Modulo (%), And (&), Xor (^), Or (|) supported.
+* Factorial, Power, Modulo, bitwise and logical operations supported. See [Operators section](#operators) for full list.
 * Support for numbers in scientific notation
 * Support for functions. (Math library functions, User functions)
 * Support for CONSTANTS/variables in expressions.
@@ -50,14 +50,18 @@ The `exec` method returns the answer as **string**. If an error occurs, then `Ob
 ### Operators
 
 The operators currently supported in order of precedence are - 
-```
-Factorial (!)
-Power (**)
-Division (/ or \) , Multiplication (*), Modulo (%)
-Addition (+), Subtraction (-)
-And (&)
-Xor (^)
-Or (|)
+```js
+[
+	['!'],  // Factorial
+	['**'],  // power
+	['/', '*', '%'],
+	['+', '-'],
+	['<<', '>>'],  // bit shifts
+	['<', '<=', '>', '>='],
+	['==', '=', '!='],   // equality comparisons
+	['&'], ['^'], ['|'],   // bitwise operations
+	['&&'], ['||']   // logical operations
+]
 ```
 
 
@@ -104,3 +108,9 @@ var BigEval = require('./MikeMcl-decimal.js');
 var b = new BigEval();
 console.log(b.exec('-2 + 3'));
 ```
+
+
+### Contributors
+
+* [danielgindi](https://github.com/danielgindi)
+

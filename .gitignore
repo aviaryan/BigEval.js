@@ -4,3 +4,4 @@ test.js
 *.min.js
 coverage/
 workspace.xml
+.DS_Store
