@@ -39,7 +39,7 @@ function autoTest(test, b){
 				exp += ops[Math.floor(Math.random() * ops.length)];
 			}
 		}
-		exp = b.plusMinus(exp); // Normalize doubles (--, ++) as eval will consider as postfix/prefix operations
+		exp = plusMinus(exp); // Normalize doubles (--, ++) as eval will consider as postfix/prefix operations
 
 		r1 = b.exec(exp);
 		r2 = eval(exp);
@@ -55,6 +55,9 @@ function autoTest(test, b){
 	test.done();
 }
 
+function plusMinus(s){
+	return s.replace(/\+\+/g, '+').replace(/\+\-/g, '-').replace(/\-\+/g, '-').replace(/\-\-/g, '+');
+};
 
 /**
  * Export
