@@ -596,7 +596,7 @@ BigEval.prototype._evaluateToken = function (token) {
                     if (this.factorialEnabled) {
                         return this.fac(this._evaluateToken(token.right));
                     } else {
-                        return this.not(this._evaluateToken(token.right));
+                        return this.logicalNot(this._evaluateToken(token.right));
                     }
                     
                 case '/': // Divide
@@ -755,8 +755,8 @@ BigEval.prototype.isTruthy = function(a){
 	return !!a;
 };
 
-BigEval.prototype.not = function(n){
-	return !n;
+BigEval.prototype.logicalNot = function(n){
+	return !this.isTruthy(n);
 };
 
 BigEval.prototype.fac = function(n){
