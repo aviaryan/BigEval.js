@@ -39,7 +39,7 @@ var BigEval = function() {
                 ];
                 
     this.prefixOps = ['!'];
-    this.factorialEnabled = true;
+    this.suffixOps = ['!'];
 
 	this.flatOps = [];
 	for (var i = 0; i < this.order.length; i++) {
@@ -438,10 +438,17 @@ BigEval.prototype._buildTree = function (tokens) {
 		if (pos !== -1) {
 			var token = tokens[pos];
             
-            if (this.prefixOps.indexOf(op) !== -1) {
+            if (this.prefixOps.indexOf(op) !== -1 || this.suffixOps.indexOf(op) !== -1) {
                 left = null;
-                right = tokens.slice(pos + 1);
-                if (pos !== 0) {
+                right = null;
+                if (this.prefixOps.indexOf(op) !== -1 && pos === 0) {
+                    right = tokens.slice(pos + 1);
+                }
+                else if (this.suffixOps.indexOf(op) !== -1 && pos > 0) {
+                    left = tokens.slice(0, pos);
+                }
+                
+                if (left === null && right === null) {
                     throw new Error('Operator ' + token.value + ' is unexpected at index ' + token.pos);
                 }
             } else {
@@ -597,9 +604,9 @@ BigEval.prototype._evaluateToken = function (token) {
             switch (token.value) {
                 
                 case '!': // Factorial or Not
-                    if (this.factorialEnabled) {
-                        return this.fac(this._evaluateToken(token.right));
-                    } else {
+                    if (token.left) { // Factorial (i.e. 5!)
+                        return this.fac(this._evaluateToken(token.left));
+                    } else { // Not (i.e. !5)
                         return this.logicalNot(this._evaluateToken(token.right));
                     }
                     
