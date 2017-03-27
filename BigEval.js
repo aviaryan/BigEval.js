@@ -425,11 +425,11 @@ BigEval.prototype._groupTokens = function (tokens, startAt) {
 
 BigEval.prototype._buildTree = function (tokens) {
 
-	var i, len, order = this.order, orderCount = order.length;
+	var order = this.order, orderCount = order.length;
 	var cs, found, pos, op;
     var left, right;
     
-	for (i = orderCount - 1; i >= 0; i--) {
+	for (var i = orderCount - 1; i >= 0; i--) {
 		cs = order[i];
 		found = this._lastIndexOfOpArray(tokens, cs);
 		pos = found[0];
