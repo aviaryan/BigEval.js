@@ -392,16 +392,13 @@ BigEval.prototype._groupTokens = function (tokens, startAt) {
 		token = tokens[i];
 						
 		if (isFunc && token.type === TokenType.COMMA) {
-			groups.push(sub);
 			sub = [];
+			groups.push(sub);
 			continue;
 		}
 		
 		if (token.type === TokenType.RIGHT_PAREN) {
 			if (isFunc) {
-				if (sub.length) {
-					groups.push(sub);
-				}
 				tokens.splice(startAt, i - startAt + 1);
 			} else {
 				tokens.splice(startAt + 1, i - startAt);
@@ -416,10 +413,14 @@ BigEval.prototype._groupTokens = function (tokens, startAt) {
 			continue;
 		}
 		
+		if (isFunc && groups.length === 0) {
+			groups.push(sub);
+		}
+		
 		sub.push(token);
 	}
 	
-	throw new Error("Unmatched parenthesis for parenthesis at index " + token.pos);
+	throw new Error("Unmatched parenthesis for parenthesis at index " + tokens[startAt].pos);
 };
 
 BigEval.prototype._buildTree = function (tokens) {
