@@ -359,7 +359,7 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 	}
 	
 	if (token.length > 0) {
-		// Probably starting something else, break it down here
+                // Add the last token
 		tokens.push({
 			type: TokenType.VAR,
 			pos: i - token.length,
