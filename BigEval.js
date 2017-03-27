@@ -490,7 +490,10 @@ BigEval.prototype._buildTree = function (tokens) {
 	}
 	else if (singleToken.type === TokenType.CALL) {
 		for (var a = 0, arglen = singleToken.args.length; a < arglen; a++) {
-			singleToken.args[a] = this._buildTree(singleToken.args[a]);
+			if (singleToken.args[a].length === 0)
+				singleToken.args[a] = null;
+			else
+				singleToken.args[a] = this._buildTree(singleToken.args[a]);
 		}
 	} else if (singleToken.type === TokenType.COMMA) {
 		throw new Error('Unexpected character at index ' + singleToken.pos);
@@ -677,7 +680,7 @@ BigEval.prototype._evaluateFunction = function (token) {
     
     var args = [];
     for (var i = 0; i < token.args.length; i++) {
-        if (token.args[i].length === 0) {
+        if (token.args[i] === null) {
             args.push(undefined);
         } else {
             args.push(this._evaluateToken(token.args[i]));
