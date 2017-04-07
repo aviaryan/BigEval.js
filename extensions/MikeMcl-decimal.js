@@ -69,6 +69,10 @@ _bigeval.prototype.notEqualsTo = function(a, b){
 	return !a.equals(b);
 };
 
+_bigeval.prototype.isTruthy = function(a){
+	return !a.equals(0);
+};
+
 _bigeval.prototype.logicalAnd = function(a, b){
     if (!a || ((a instanceof Decimal) && a.equals(0)))
         return a;
