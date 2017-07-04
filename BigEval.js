@@ -303,15 +303,14 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 
 			var token = '';
 
-			do {
-				token += c;
-
-				i++;
+			while (i < len) {
 				c = expression[i];
-
 				isVarChars = this.varNameChars[c];
+				if (!isVarChars) break;
 				
-			} while (isVarChars);
+				token += c;
+				i++;
+			}
 
 			tokens.push({
 				type: TokenType.VAR,
@@ -377,7 +376,6 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 
 		throw new Error('Unexpected token at index ' + i);
 	}
-
 
 	return tokens;
 };
