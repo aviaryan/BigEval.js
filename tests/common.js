@@ -32,11 +32,17 @@ function autoTest(test, b){
 		}
 
 		exp = "";
+		var lastNumber;
 		for (j = 0; j < sz; j++){ // build exp
 			if (j%2 === 0) {
-				exp += Math.floor(Math.random() * 20 - 9); // -9
+				lastNumber = Math.floor(Math.random() * 20 - 9); // -9
+				exp += lastNumber;
 			} else {
-				exp += ops[Math.floor(Math.random() * ops.length)];
+				var op = ops[Math.floor(Math.random() * ops.length)];
+				while (op === '**' && lastNumber < 0) {
+					op = ops[Math.floor(Math.random() * ops.length)];
+				}
+				exp += op;
 			}
 		}
 		exp = plusMinus(exp); // Normalize doubles (--, ++) as eval will consider as postfix/prefix operations
