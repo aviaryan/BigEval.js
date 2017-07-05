@@ -16,7 +16,7 @@ install:
 script:
   - istanbul cover nodeunit tests/testmain.js
   - eclint check "{tests,extensions}/*.js"
-  - eclint check "*.js"
+  - eclint check "*.{js,html,json}"
 branches:
   only:
     - gh-pages
