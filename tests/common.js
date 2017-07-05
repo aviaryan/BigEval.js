@@ -19,7 +19,7 @@ function autoTest(test, b){
 		'==', '!=',
 		'&', '^', '|',
 		'&&', '||'];
-        
+
 	try {
 		eval('1**2'); // Check if current runtime support ** operator
 		ops.push('**');
@@ -43,7 +43,7 @@ function autoTest(test, b){
 
 		r1 = b.exec(exp);
 		r2 = eval(exp);
-		
+
 		if (r1 !== r2 && (!isNaN(r1) || !isNaN(r2))) { // precision
 			console.log(i + " exp=  " + exp + " bigeval= " + r1 + " real= " + r2);
 			test.equals(r1, r2);

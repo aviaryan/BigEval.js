@@ -74,17 +74,17 @@ _bigeval.prototype.isTruthy = function(a){
 };
 
 _bigeval.prototype.logicalAnd = function(a, b){
-    if (!a || ((a instanceof Decimal) && a.equals(0)))
-        return a;
-    
-    return b;
+	if (!a || ((a instanceof Decimal) && a.equals(0)))
+		return a;
+
+	return b;
 };
 
 _bigeval.prototype.logicalOr = function(a, b){
-    if (!a || ((a instanceof Decimal) && a.equals(0)))
-        return b;
-    
-    return a;
+	if (!a || ((a instanceof Decimal) && a.equals(0)))
+		return b;
+
+	return a;
 };
 
 _bigeval.prototype.mod = function(a, b){
