@@ -11,6 +11,7 @@ install:
   - npm install nodeunit -g
   - npm install istanbul -g
   - npm install codecov -g
+  - npm install happiness -g
 script:
   - istanbul cover nodeunit tests/testmain.js
 branches:
