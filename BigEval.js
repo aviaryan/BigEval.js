@@ -24,7 +24,7 @@ var TokenType = {
 
 var hasOwnProperty = Object.hasOwnProperty;
 
-var DEFAULT_VAR_NAME_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
+var DEFAULT_VAR_NAME_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$';
 
 var BigEval = function() {
 
