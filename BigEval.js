@@ -45,6 +45,11 @@ var BigEval = function() {
 	this.prefixOps = ['!'];
 	this.suffixOps = ['!'];
 
+	// https://en.wikipedia.org/wiki/Operator_associativity
+	this.rightAssociativeOps = {
+		'**': true
+	};
+
 	this.varNameChars = Object.create ? Object.create(null) : {};
 
 	var chars = DEFAULT_VAR_NAME_CHARS.split('');
@@ -116,9 +121,17 @@ BigEval.prototype._opAtPosition = function(s, p) {
 	return op;
 };
 
-BigEval.prototype._lastIndexOfOpInTokens = function(tokens, op, start) {
-	start = start > -1 ? start : 0;
-	for (var i = tokens.length - 1; i >= start; i--) {
+BigEval.prototype._indexOfOpInTokens = function(tokens, op) {
+	for (var i = 0; i < tokens.length; i++) {
+		var token = tokens[i];
+		if (token.type === TokenType.OP && token.value === op)
+			return i;
+	}
+	return -1;
+};
+
+BigEval.prototype._lastIndexOfOpInTokens = function(tokens, op) {
+	for (var i = tokens.length - 1; i >= 0; i--) {
 		var token = tokens[i];
 		if (token.type === TokenType.OP && token.value === op)
 			return i;
@@ -131,7 +144,13 @@ BigEval.prototype._lastIndexOfOpArray = function(tokens, cs) {
 
 	for (var i = 0; i < cs.length; i++){
 		item = cs[i];
-		p = this._lastIndexOfOpInTokens(tokens, item);
+
+		// Is this one a right-associative op?
+		if (this.rightAssociativeOps.hasOwnProperty(item)) {
+			p = this._indexOfOpInTokens(tokens, item);
+		} else {
+			p = this._lastIndexOfOpInTokens(tokens, item);
+		}
 
 		if (p == -1)
 			continue;
