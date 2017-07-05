@@ -12,8 +12,11 @@ install:
   - npm install istanbul -g
   - npm install codecov -g
   - npm install happiness -g
+  - npm install eclint@2.2.0 -g
 script:
   - istanbul cover nodeunit tests/testmain.js
+  - eclint check "{tests,extensions}/*.js"
+  - eclint check "*.js"
 branches:
   only:
     - gh-pages

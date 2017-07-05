@@ -9,6 +9,9 @@ insert_final_newline = true
 [*.js]
 indent_style = tab
 indent_size = 4
+block_comment_start = /*
+block_comment = *
+block_comment_end = */
 
 [*.html]
 indent_size = 2
