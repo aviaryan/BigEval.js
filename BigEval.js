@@ -155,7 +155,7 @@ BigEval.prototype._parseString = function (data, startAt, strict, unquote) {
 	var quote = null;
 	if (unquote) {
 		quote = data[i++];
-		if (quote !== '\'' && quote !== '\"') {
+		if (quote !== '\'' && quote !== '"') {
 			throw new Error("Not a string");
 		}
 	}
@@ -176,7 +176,7 @@ BigEval.prototype._parseString = function (data, startAt, strict, unquote) {
 
 			if (c === '\\' ||
 				c === '\'' ||
-				c === '\"') {
+				c === '"') {
 				out += c;
 			} else if (c === 'b') {
 				out += '\b';
@@ -274,7 +274,6 @@ BigEval.prototype._parseNumber = function (data, startAt) {
 };
 
 BigEval.prototype._tokenizeExpression = function (expression) {
-
 	var tokens = [];
 
 	var parsed;
@@ -307,7 +306,7 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 				c = expression[i];
 				isVarChars = this.varNameChars[c];
 				if (!isVarChars) break;
-				
+
 				token += c;
 				i++;
 			}
@@ -323,7 +322,7 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 			continue;
 		}
 
-		if (c === '\'' || c === '\"') {
+		if (c === '\'' || c === '"') {
 			parsed = this._parseString(expression, i, false, true);
 			tokens.push({
 				type: TokenType.STRING,
@@ -381,7 +380,6 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 };
 
 BigEval.prototype._groupTokens = function (tokens, startAt) {
-
 	var isFunc = startAt > 0 && tokens[startAt - 1].type === TokenType.VAR;
 
 	var rootToken = tokens[isFunc ? startAt - 1: startAt];
