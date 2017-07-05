@@ -111,7 +111,11 @@ console.log(b.exec('-2 + 3'));
 ```
 
 
+### Ports
+
+* [Eval.net](https://github.com/danielgindi/Eval.net) by [danielgindi](https://github.com/danielgindi) - .NET (C#) port
+
+
 ### Contributors
 
 * [danielgindi](https://github.com/danielgindi)
-
