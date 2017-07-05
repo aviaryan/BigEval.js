@@ -266,28 +266,14 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 
 	var tokens = [];
 
-	var token = '';
 	var parsed;
 
 	for (var i = 0, len = expression.length; i < len; i++) {
 		var c = expression[i];
 
 		var isDigit = c >= '0' && c <= '9';
-		var isAlpha = (c >= 'a' && c <= 'z') ||
-				(c >= 'A' && c <= 'Z');
-		var isVarChars = isDigit || isAlpha || c === '_';
 
-		if (token.length > 0 && !isVarChars) {
-			// Probably starting something else, break it down here
-			tokens.push({
-				type: TokenType.VAR,
-				pos: i - token.length,
-				value: token
-			});
-			token = '';
-		}
-
-		if ((isDigit || c === '.') && token.length === 0) {
+		if (isDigit || c === '.') {
 			// Starting a number
 			parsed = this._parseNumber(expression, i);
 			tokens.push({
@@ -299,8 +285,37 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 			continue;
 		}
 
+		var isAlpha = (c >= 'a' && c <= 'z') ||
+				(c >= 'A' && c <= 'Z');
+		var isVarChars = isDigit || isAlpha || c === '_';
+
 		if (isVarChars) {
-			token += c;
+			// Starting a variable name - can start only with A-Z_
+
+			var token = '';
+
+			do {
+				token += c;
+
+				i++;
+				c = expression[i];
+
+				isVarChars =
+					(c >= '0' && c <= '9') ||
+					(c >= 'a' && c <= 'z') ||
+					(c >= 'A' && c <= 'Z') ||
+					c === '_';
+
+			} while (isVarChars);
+
+			tokens.push({
+				type: TokenType.VAR,
+				pos: i - token.length,
+				value: token
+			});
+
+			i--; // Step back to continue loop from correct place
+
 			continue;
 		}
 
@@ -358,15 +373,6 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 		throw new Error('Unexpected token at index ' + i);
 	}
 
-	if (token.length > 0) {
-				// Add the last token
-		tokens.push({
-			type: TokenType.VAR,
-			pos: i - token.length,
-			value: token
-		});
-		token = '';
-	}
 
 	return tokens;
 };
