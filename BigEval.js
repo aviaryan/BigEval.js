@@ -51,7 +51,7 @@ var BigEval = function() {
 	for (var i = 0; i < chars.length; i++) {
 		this.varNameChars[chars[i]] = true;
 	}
-	
+
 	this.flatOps = [];
 	for (var i = 0; i < this.order.length; i++) {
 		this.flatOps = this.flatOps.concat(this.order[i]);
