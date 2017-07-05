@@ -50,7 +50,7 @@ The `exec` method returns the answer as **string**. If an error occurs, then `Ob
 
 ### Operators
 
-The operators currently supported in order of precedence are - 
+The operators currently supported in order of precedence are -
 ```js
 [
 	['!'],  // Factorial
@@ -85,9 +85,9 @@ To add a new constant, we do `Obj.CONSTANT.NAME = VALUE`. The VALUE should be in
 ```js
 Obj.CONSTANT.INTOCM = '2.54'; // inch to cm
 console.log(Obj.exec('12 * intocm')); // the case doesn't matter in expressions
-``` 
+```
 
-A constant NAME should start with an alphabet and should only use `[a-zA-Z0-9_]` characters. Default constants include - 
+A constant NAME should start with an alphabet and should only use `[a-zA-Z0-9_]` characters. Default constants include -
 ```ini
 PI = 3.1415...
 PI_2 = PI / 2
