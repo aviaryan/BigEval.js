@@ -22,6 +22,10 @@ var TokenType = {
 	COMMA: ','
 };
 
+var hasOwnProperty = Object.hasOwnProperty;
+
+var DEFAULT_VAR_NAME_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
+
 var BigEval = function() {
 
 	// https://en.wikipedia.org/wiki/Order_of_operations#Programming_languages
@@ -41,6 +45,13 @@ var BigEval = function() {
 	this.prefixOps = ['!'];
 	this.suffixOps = ['!'];
 
+	this.varNameChars = Object.create ? Object.create(null) : {};
+
+	var chars = DEFAULT_VAR_NAME_CHARS.split('');
+	for (var i = 0; i < chars.length; i++) {
+		this.varNameChars[chars[i]] = true;
+	}
+	
 	this.flatOps = [];
 	for (var i = 0; i < this.order.length; i++) {
 		this.flatOps = this.flatOps.concat(this.order[i]);
@@ -285,9 +296,7 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 			continue;
 		}
 
-		var isAlpha = (c >= 'a' && c <= 'z') ||
-				(c >= 'A' && c <= 'Z');
-		var isVarChars = isDigit || isAlpha || c === '_';
+		var isVarChars = this.varNameChars[c];
 
 		if (isVarChars) {
 			// Starting a variable name - can start only with A-Z_
@@ -300,12 +309,8 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 				i++;
 				c = expression[i];
 
-				isVarChars =
-					(c >= '0' && c <= '9') ||
-					(c >= 'a' && c <= 'z') ||
-					(c >= 'A' && c <= 'Z') ||
-					c === '_';
-
+				isVarChars = this.varNameChars[c];
+				
 			} while (isVarChars);
 
 			tokens.push({
