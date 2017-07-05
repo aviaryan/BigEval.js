@@ -1,6 +1,6 @@
 # BigEval.js
 
-[![Build Status](https://travis-ci.org/aviaryan/BigEval.js.svg?branch=gh-pages)](https://travis-ci.org/aviaryan/BigEval.js)
+[![Build Status](https://travis-ci.org/aviaryan/BigEval.js.svg?branch=master)](https://travis-ci.org/aviaryan/BigEval.js)
 [![Codecov](https://img.shields.io/codecov/c/github/aviaryan/BigEval.js.svg?maxAge=2592000)](https://codecov.io/github/aviaryan/BigEval.js)
 [![Code Climate](https://codeclimate.com/github/aviaryan/BigEval.js/badges/gpa.svg)](https://codeclimate.com/github/aviaryan/BigEval.js)
 [![Issue Count](https://codeclimate.com/github/aviaryan/BigEval.js/badges/issue_count.svg)](https://codeclimate.com/github/aviaryan/BigEval.js)
