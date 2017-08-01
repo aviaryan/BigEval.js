@@ -22,6 +22,10 @@ var TokenType = {
 	COMMA: ','
 };
 
+var hasOwnProperty = Object.hasOwnProperty;
+
+var DEFAULT_VAR_NAME_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$';
+
 var BigEval = function() {
 
 	// https://en.wikipedia.org/wiki/Order_of_operations#Programming_languages
@@ -40,6 +44,18 @@ var BigEval = function() {
 
 	this.prefixOps = ['!'];
 	this.suffixOps = ['!'];
+
+	// https://en.wikipedia.org/wiki/Operator_associativity
+	this.rightAssociativeOps = {
+		'**': true
+	};
+
+	this.varNameChars = Object.create ? Object.create(null) : {};
+
+	var chars = DEFAULT_VAR_NAME_CHARS.split('');
+	for (var i = 0; i < chars.length; i++) {
+		this.varNameChars[chars[i]] = true;
+	}
 
 	this.flatOps = [];
 	for (var i = 0; i < this.order.length; i++) {
@@ -105,9 +121,17 @@ BigEval.prototype._opAtPosition = function(s, p) {
 	return op;
 };
 
-BigEval.prototype._lastIndexOfOpInTokens = function(tokens, op, start) {
-	start = start > -1 ? start : 0;
-	for (var i = tokens.length - 1; i >= start; i--) {
+BigEval.prototype._indexOfOpInTokens = function(tokens, op) {
+	for (var i = 0; i < tokens.length; i++) {
+		var token = tokens[i];
+		if (token.type === TokenType.OP && token.value === op)
+			return i;
+	}
+	return -1;
+};
+
+BigEval.prototype._lastIndexOfOpInTokens = function(tokens, op) {
+	for (var i = tokens.length - 1; i >= 0; i--) {
 		var token = tokens[i];
 		if (token.type === TokenType.OP && token.value === op)
 			return i;
@@ -120,7 +144,13 @@ BigEval.prototype._lastIndexOfOpArray = function(tokens, cs) {
 
 	for (var i = 0; i < cs.length; i++){
 		item = cs[i];
-		p = this._lastIndexOfOpInTokens(tokens, item);
+
+		// Is this one a right-associative op?
+		if (this.rightAssociativeOps.hasOwnProperty(item)) {
+			p = this._indexOfOpInTokens(tokens, item);
+		} else {
+			p = this._lastIndexOfOpInTokens(tokens, item);
+		}
 
 		if (p == -1)
 			continue;
@@ -144,7 +174,7 @@ BigEval.prototype._parseString = function (data, startAt, strict, unquote) {
 	var quote = null;
 	if (unquote) {
 		quote = data[i++];
-		if (quote !== '\'' && quote !== '\"') {
+		if (quote !== '\'' && quote !== '"') {
 			throw new Error("Not a string");
 		}
 	}
@@ -165,7 +195,7 @@ BigEval.prototype._parseString = function (data, startAt, strict, unquote) {
 
 			if (c === '\\' ||
 				c === '\'' ||
-				c === '\"') {
+				c === '"') {
 				out += c;
 			} else if (c === 'b') {
 				out += '\b';
@@ -263,31 +293,16 @@ BigEval.prototype._parseNumber = function (data, startAt) {
 };
 
 BigEval.prototype._tokenizeExpression = function (expression) {
-
 	var tokens = [];
 
-	var token = '';
 	var parsed;
 
 	for (var i = 0, len = expression.length; i < len; i++) {
 		var c = expression[i];
 
 		var isDigit = c >= '0' && c <= '9';
-		var isAlpha = (c >= 'a' && c <= 'z') ||
-				(c >= 'A' && c <= 'Z');
-		var isVarChars = isDigit || isAlpha || c === '_';
 
-		if (token.length > 0 && !isVarChars) {
-			// Probably starting something else, break it down here
-			tokens.push({
-				type: TokenType.VAR,
-				pos: i - token.length,
-				value: token
-			});
-			token = '';
-		}
-
-		if ((isDigit || c === '.') && token.length === 0) {
+		if (isDigit || c === '.') {
 			// Starting a number
 			parsed = this._parseNumber(expression, i);
 			tokens.push({
@@ -299,12 +314,34 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 			continue;
 		}
 
+		var isVarChars = this.varNameChars[c];
+
 		if (isVarChars) {
-			token += c;
+			// Starting a variable name - can start only with A-Z_
+
+			var token = '';
+
+			while (i < len) {
+				c = expression[i];
+				isVarChars = this.varNameChars[c];
+				if (!isVarChars) break;
+
+				token += c;
+				i++;
+			}
+
+			tokens.push({
+				type: TokenType.VAR,
+				pos: i - token.length,
+				value: token
+			});
+
+			i--; // Step back to continue loop from correct place
+
 			continue;
 		}
 
-		if (c === '\'' || c === '\"') {
+		if (c === '\'' || c === '"') {
 			parsed = this._parseString(expression, i, false, true);
 			tokens.push({
 				type: TokenType.STRING,
@@ -358,21 +395,10 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 		throw new Error('Unexpected token at index ' + i);
 	}
 
-	if (token.length > 0) {
-				// Add the last token
-		tokens.push({
-			type: TokenType.VAR,
-			pos: i - token.length,
-			value: token
-		});
-		token = '';
-	}
-
 	return tokens;
 };
 
 BigEval.prototype._groupTokens = function (tokens, startAt) {
-
 	var isFunc = startAt > 0 && tokens[startAt - 1].type === TokenType.VAR;
 
 	var rootToken = tokens[isFunc ? startAt - 1: startAt];
