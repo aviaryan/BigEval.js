@@ -552,9 +552,9 @@ BigEval.prototype.compile = function (expression) {
 
 			if (prevToken.value !== '+') {
 				if (token.value === '-') {
-					token.value === '+';
+					token.value = '+';
 				} else {
-					token.value === '-';
+					token.value = '-';
 				}
 			}
 
