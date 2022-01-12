@@ -64,6 +64,9 @@ var BigEval = function() {
 
 	this.CONSTANT = {};
 	this.FUNCTION = {};
+
+	/** @type function(name:string):any */
+	this.constProvider = null;
 };
 
 BigEval.prototype.DEFAULT_CONSTANTS = {
@@ -610,6 +613,12 @@ BigEval.prototype._evaluateToken = function (token) {
 			return this.number(value);
 
 		case TokenType.VAR:
+			if (typeof this.constProvider === 'function') {
+				var v = this.constProvider(value);
+				if (v !== undefined && v !== null)
+					return v;
+			}
+
 			if (typeof this.FORCE_CONSTANTS[value.toUpperCase()] !== 'undefined')
 				return this.FORCE_CONSTANTS[value.toUpperCase()];
 
