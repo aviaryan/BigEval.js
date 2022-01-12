@@ -146,16 +146,16 @@ BigEval.prototype._lastIndexOfOpArray = function(tokens, cs) {
 		item = cs[i];
 
 		// Is this one a right-associative op?
-		if (this.rightAssociativeOps.hasOwnProperty(item)) {
+		if (hasOwnProperty.call(this.rightAssociativeOps, item)) {
 			p = this._indexOfOpInTokens(tokens, item);
 		} else {
 			p = this._lastIndexOfOpInTokens(tokens, item);
 		}
 
-		if (p == -1)
+		if (p === -1)
 			continue;
 
-		if (l == -1 || p > l) {
+		if (l === -1 || p > l) {
 			l = p;
 			m = item;
 		}
@@ -576,7 +576,6 @@ BigEval.prototype.compile = function (expression) {
 			tokens.splice(i - 1, 1);
 			i--;
 			len = tokens.length
-			continue;
 		}
 	}
 

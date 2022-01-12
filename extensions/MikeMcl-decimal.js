@@ -5,7 +5,7 @@
 
 // function to remove prefixed + . see https://github.com/aviaryan/BigEval.js/issues/8
 function p(s){
-	return s[0] == '+' ? s.substr(1) : s;
+	return s[0] === '+' ? s.substr(1) : s;
 }
 
 var _decimal, _bigeval;
