@@ -23,6 +23,11 @@ exports.testBasics = {
 	testMulDiv: function(test){
 		test.equals(Math.round(this.b.exec("345 / 23 * 124 / 41 * 12")), 544);
 		test.done();
+	},
+
+	testExp: function(test){
+		test.equals(this.b.exec("1e1 + 1e+2 + 1e-3"), 110.001);
+		test.done();
 	}
 };
 
