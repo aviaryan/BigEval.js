@@ -570,6 +570,10 @@ BigEval.prototype.compile = function (expression) {
 			((i > 1 && tokens[i - 2].type === TokenType.OP) || i === 1)
 			) {
 
+			if (tokens[i - 2].value==='!') {
+				continue
+			}
+
 			if (prevToken.value === '-') {
 				token.value = prevToken.value + token.value;
 			}
