@@ -1,8 +1,7 @@
 # BigEval.js
 
-[![Build Status](https://travis-ci.org/aviaryan/BigEval.js.svg?branch=master)](https://travis-ci.org/aviaryan/BigEval.js)
-[![Codecov](https://img.shields.io/codecov/c/github/aviaryan/BigEval.js.svg?maxAge=2592000)](https://codecov.io/github/aviaryan/BigEval.js)
-[![Codacy Badge](https://api.codacy.com/project/badge/grade/e9e94367b8eb4952a7e0dda5c0dfdf29)](https://www.codacy.com/app/aviaryan/BigEval-js)
+![GitHub Action CI](https://github.com/aviaryan/BigEval.js/actions/workflows/node.js.yml/badge.svg)
+[![codecov](https://codecov.io/gh/aviaryan/BigEval.js/branch/master/graph/badge.svg?token=RFweVD9NQk)](https://codecov.io/gh/aviaryan/BigEval.js)
 [![npm](https://img.shields.io/npm/v/bigeval.svg)](https://www.npmjs.com/package/bigeval)
 [![npm](https://img.shields.io/npm/dm/bigeval.svg)](https://www.npmjs.com/package/bigeval)
 [![npm](https://img.shields.io/npm/l/bigeval.svg)]()
