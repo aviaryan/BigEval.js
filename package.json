@@ -6,7 +6,7 @@
   "scripts": {
     "test": "nodeunit tests/testmain.js",
     "testdecimal": "nodeunit tests/testdecimal.js",
-    "coverage": "nyc npm test",
+    "coverage": "nyc --reporter=lcov npm test",
     "eclint": "eclint check \"{tests,extensions}/*.js\"; eclint check \"*.{js,html,json}\""
   },
   "repository": {
