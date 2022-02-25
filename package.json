@@ -4,7 +4,8 @@
   "description": "Mathematical expression solving library",
   "main": "BigEval.js",
   "scripts": {
-    "test": "nodeunit tests/testmain.js"
+    "test": "nodeunit tests/testmain.js",
+    "coverage": "nyc npm test"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
   },
   "homepage": "https://github.com/aviaryan/BigEval.js",
   "devDependencies": {
-    "nodeunit": "^0.11.3"
+    "nodeunit": "^0.11.3",
+    "nyc": "^15.1.0"
   }
 }
