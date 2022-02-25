@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/aviaryan/BigEval.js/issues"
   },
-  "homepage": "https://github.com/aviaryan/BigEval.js"
+  "homepage": "https://github.com/aviaryan/BigEval.js",
+  "devDependencies": {
+    "nodeunit": "^0.11.3"
+  }
 }
