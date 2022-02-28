@@ -25,6 +25,41 @@ exports.testBasics = {
 		test.done();
 	},
 
+	testErrorData1: function(test){
+		try {
+			Math.round(this.b.execute("5 * FN(1"));
+			throw new Error('Should have thrown an error');
+		} catch (err) {
+			test.equals(err.lineInfo.line, 1);
+			test.equals(err.lineInfo.column, 7);
+			test.equals(err.endLineInfo.column, 8);
+		}
+		test.done();
+	},
+
+	testErrorData2: function(test){
+		try {
+			Math.round(this.b.execute("5 * UNKNOWN(1)"));
+			throw new Error('Should have thrown an error');
+		} catch (err) {
+			test.equals(err.lineInfo.line, 1);
+			test.equals(err.lineInfo.column, 5);
+			test.equals(err.endLineInfo.column, 12);
+		}
+		test.done();
+	},
+
+	testErrorData3: function(test){
+		try {
+			Math.round(this.b.execute("6-*4"));
+			throw new Error('Should have thrown an error');
+		} catch (err) {
+			test.equals(err.lineInfo.line, 1);
+			test.equals(err.lineInfo.column, 3);
+		}
+		test.done();
+	},
+
 	testExp: function(test){
 		test.equals(this.b.exec("1e1 + 1e+2 + 1e-3"), 110.001);
  		test.done();

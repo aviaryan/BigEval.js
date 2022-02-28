@@ -26,6 +26,52 @@ var hasOwnProperty = Object.hasOwnProperty;
 
 var DEFAULT_VAR_NAME_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$';
 
+var lineBreakRgx = new RegExp(/\r\n?|\n|\u2028|\u2029/g);
+function getLineInfo(input, offset) {
+	for (var line = 1, cur = 0;;) {
+		lineBreakRgx.lastIndex = cur;
+		var match = lineBreakRgx.exec(input);
+		if (match && match.index < offset) {
+			line++;
+			cur = match.index + match[0].length;
+		} else {
+			return { line: line, column: offset - cur + 1 }
+		}
+	}
+}
+
+var enrichError = function(err, formula, at, end) {
+	err.position = at;
+
+	if (end != null)
+		err.endPosition = end;
+
+	let lineInfo = null;
+	let endLineInfo = null;
+
+	Object.defineProperty(err, 'lineInfo', {
+		get() {
+			if (!lineInfo)
+				lineInfo = getLineInfo(formula, at);
+			return lineInfo;
+		},
+	});
+
+	Object.defineProperty(err, 'endLineInfo', {
+		get() {
+			if (end == null)
+				return undefined;
+
+			if (!endLineInfo)
+				endLineInfo = getLineInfo(formula, end);
+
+			return endLineInfo;
+		},
+	});
+
+	return err;
+};
+
 var BigEval = function() {
 
 	// https://en.wikipedia.org/wiki/Order_of_operations#Programming_languages
@@ -169,6 +215,7 @@ BigEval.prototype._lastIndexOfOpArray = function(tokens, cs) {
 
 BigEval.prototype._parseString = function (data, startAt, strict, unquote) {
 
+	var startAt = startAt || 0;
 	var i = startAt || 0, len = data.length;
 
 	var out = '';
@@ -178,7 +225,7 @@ BigEval.prototype._parseString = function (data, startAt, strict, unquote) {
 	if (unquote) {
 		quote = data[i++];
 		if (quote !== '\'' && quote !== '"') {
-			throw new Error("Not a string");
+			throw enrichError(new SyntaxError("Not a string"), data, startAt, startAt + 1);
 		}
 	}
 
@@ -188,7 +235,7 @@ BigEval.prototype._parseString = function (data, startAt, strict, unquote) {
 		if (c === '\\') {
 			c = data[i + 1];
 			if (!c) {
-				throw new Error("Invalid string. An escape character with no escapee encountered at index " + i);
+				throw enrichError(new SyntaxError("Invalid string. An escape character with no escapee encountered at index " + i), data, i, i + 1);
 			}
 
 			// Take a step forward here
@@ -225,7 +272,7 @@ BigEval.prototype._parseString = function (data, startAt, strict, unquote) {
 						hex = c - 'A' + 10;
 					} else {
 						if (strict) {
-							throw new Error("Unexpected escape sequence at index " + (i - j - 2));
+							throw enrichError(new SyntaxError("Unexpected escape sequence at index " + (i - j - 2)), data, (i - j - 2), (i - j - 1));
 						} else {
 							i--;
 							break;
@@ -238,7 +285,7 @@ BigEval.prototype._parseString = function (data, startAt, strict, unquote) {
 				out += String.fromCharCode(uffff);
 			} else {
 				if (strict) {
-					throw new Error("Unexpected escape sequence at index " + (i - 1));
+					throw enrichError(new SyntaxError("Unexpected escape sequence at index " + (i - 1)), data, i - 1, i);
 				} else {
 					out += c;
 				}
@@ -251,7 +298,7 @@ BigEval.prototype._parseString = function (data, startAt, strict, unquote) {
 	}
 
 	if (unquote) {
-		throw new Error("String must be quoted with matching single-quote (\') or double-quote(\") characters.");
+		throw enrichError(new SyntaxError("String must be quoted with matching single-quote (\') or double-quote(\") characters."), data, i, i + 1);
 	}
 
 	return out;
@@ -266,7 +313,7 @@ BigEval.prototype._parseNumber = function (data, startAt) {
 	var dec = false;
 
 	if (i >= len) {
-		throw new Error('Can\'t parse token at ' + i);
+		throw enrichError(new SyntaxError('Can\'t parse token at ' + i), data, i, i + 1);
 	}
 
 	for (; i < len; i++) {
@@ -289,7 +336,7 @@ BigEval.prototype._parseNumber = function (data, startAt) {
 	}
 
 	if (i === startAt || exp === 1 || exp === 2) {
-		throw new Error('Unexpected character at index ' + i);
+		throw enrichError(new SyntaxError('Unexpected character at index ' + i), data, i, i + 1);
 	}
 
 	return [data.substr(startAt, i - startAt), i];
@@ -311,7 +358,9 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 			tokens.push({
 				type: TokenType.NUMBER,
 				pos: i,
-				value: parsed[0]
+				end: parsed[1],
+				value: parsed[0],
+				source: expression
 			});
 			i = parsed[1] - 1;
 			continue;
@@ -336,7 +385,9 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 			tokens.push({
 				type: TokenType.VAR,
 				pos: i - token.length,
-				value: token
+				end: i,
+				value: token,
+				source: expression
 			});
 
 			i--; // Step back to continue loop from correct place
@@ -349,7 +400,9 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 			tokens.push({
 				type: TokenType.STRING,
 				pos: i,
-				value: parsed[0]
+				end: parsed[1],
+				value: parsed[0],
+				source: expression
 			});
 			i = parsed[1] - 1;
 			continue;
@@ -358,7 +411,9 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 		if (c === '(') {
 			tokens.push({
 				type: TokenType.LEFT_PAREN,
-				pos: i
+				pos: i,
+				end: i + 1,
+				source: expression
 			});
 			continue;
 		}
@@ -366,7 +421,9 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 		if (c === ')') {
 			tokens.push({
 				type: TokenType.RIGHT_PAREN,
-				pos: i
+				pos: i,
+				end: i + 1,
+				source: expression
 			});
 			continue;
 		}
@@ -374,7 +431,9 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 		if (c === ',') {
 			tokens.push({
 				type: TokenType.COMMA,
-				pos: i
+				pos: i,
+				end: i + 1,
+				source: expression
 			});
 			continue;
 		}
@@ -389,13 +448,15 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 			tokens.push({
 				type: TokenType.OP,
 				pos: i,
-				value: op
+				end: i + op.length,
+				value: op,
+				source: expression
 			});
 			i += op.length - 1;
 			continue;
 		}
 
-		throw new Error('Unexpected token at index ' + i);
+		throw enrichError(new SyntaxError('Unexpected token at index ' + i), data, i, i + 1);
 	}
 
 	return tokens;
@@ -449,10 +510,13 @@ BigEval.prototype._groupTokens = function (tokens, startAt) {
 		sub.push(token);
 	}
 
-	throw new Error("Unmatched parenthesis for parenthesis at index " + tokens[startAt].pos);
+	var startToken = tokens[startAt];
+	throw enrichError(
+		new SyntaxError("Unmatched parenthesis for parenthesis at index " + startToken.pos),
+		startToken.source, startToken.pos, startToken.end);
 };
 
-BigEval.prototype._buildTree = function (tokens) {
+BigEval.prototype._buildTree = function (tokens, parentToken) {
 
 	var order = this.order, orderCount = order.length;
 	var cs, found, pos, op;
@@ -478,7 +542,7 @@ BigEval.prototype._buildTree = function (tokens) {
 				}
 
 				if (left === null && right === null) {
-					throw new Error('Operator ' + token.value + ' is unexpected at index ' + token.pos);
+					throw enrichError(new SyntaxError('Operator ' + token.value + ' is unexpected at index ' + token.pos), token.source, token.pos, token.end);
 				}
 			} else {
 				left = tokens.slice(0, pos);
@@ -491,11 +555,11 @@ BigEval.prototype._buildTree = function (tokens) {
 
 			if ((left && left.length === 0) ||
 				(right && right.length === 0)) {
-				throw new Error('Invalid expression, missing operand');
+				throw enrichError(new SyntaxError('Invalid expression, missing operand'), token.source, token.pos, token.end);
 			}
 
 			if (!left && op === '-') {
-				left = [{ type: TokenType.NUMBER, value: 0 }];
+				left = [{ type: TokenType.NUMBER, value: 0, source: expression }];
 			}
 			else if (!left && op === '+') {
 				return this._buildTree(right);
@@ -512,27 +576,27 @@ BigEval.prototype._buildTree = function (tokens) {
 	}
 
 	if (tokens.length > 1) {
-		throw new Error('Invalid expression, missing operand or operator at ' + tokens[1].pos);
+		throw enrichError(new SyntaxError('Invalid expression, missing operand or operator at ' + tokens[1].pos), tokens[1].source, tokens[1].pos, tokens[1].end);
 	}
 
 	if (tokens.length === 0) {
-		throw new Error('Invalid expression, missing operand or operator.');
+		throw enrichError(new SyntaxError('Invalid expression, missing operand or operator.'), parentToken.source, parentToken.pos, parentToken.end);
 	}
 
 	var singleToken = tokens[0];
 
 	if (singleToken.type === TokenType.GROUP) {
-		singleToken = this._buildTree(singleToken.tokens);
+		singleToken = this._buildTree(singleToken.tokens, singleToken);
 	}
 	else if (singleToken.type === TokenType.CALL) {
 		for (var a = 0, arglen = singleToken.args.length; a < arglen; a++) {
 			if (singleToken.args[a].length === 0)
 				singleToken.args[a] = null;
 			else
-				singleToken.args[a] = this._buildTree(singleToken.args[a]);
+				singleToken.args[a] = this._buildTree(singleToken.args[a], singleToken);
 		}
 	} else if (singleToken.type === TokenType.COMMA) {
-		throw new Error('Unexpected character at index ' + singleToken.pos);
+		throw enrichError(new SyntaxError('Unexpected character at index ' + singleToken.pos), singleToken.source, singleToken.pos, singleToken.end);
 	}
 
 	return singleToken;
@@ -741,7 +805,7 @@ BigEval.prototype._evaluateFunction = function (token) {
 		return root[fname].apply(root, args);
 	}
 
-	throw new Error('Function named "' + fname + '" was not found');
+	throw enrichError(new ReferenceError('Function named "' + fname + '" was not found'), token.source, token.pos, token.end);
 };
 
 /**
