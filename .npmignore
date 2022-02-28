@@ -3,3 +3,6 @@
 .idea/
 extensions/
 test.js
+coverage/
+.nyc_output/
+.github/
