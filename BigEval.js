@@ -570,8 +570,6 @@ BigEval.prototype.compile = function (expression) {
 			((i > 1 && tokens[i - 2].type === TokenType.OP) || i === 1)
 			) {
 
-			console.log(tokens[i - 2]);
-
 			if (i > 1 && tokens[i - 2].value==='!') {				
 				continue
 			}
