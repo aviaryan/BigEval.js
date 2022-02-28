@@ -23,7 +23,13 @@ exports.testBasics = {
 	testMulDiv: function(test){
 		test.equals(Math.round(this.b.exec("345 / 23 * 124 / 41 * 12")), 544);
 		test.done();
+	},
+
+	testFactorial: function(test){
+		test.equals(this.b.exec("2*5!+3"), 243);
+		test.done();
 	}
+
 };
 
 /**
