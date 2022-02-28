@@ -23,6 +23,16 @@ exports.testBasics = {
 	testMulDiv: function(test){
 		test.equals(Math.round(this.b.exec("345 / 23 * 124 / 41 * 12")), 544);
 		test.done();
+	},
+
+	testConstProvider: function(test){
+		this.b.constProvider = function (name) {
+			if (name === 'ABC')
+				return 123;
+		};
+
+		test.equals(Math.round(this.b.exec("ABC * 2")), 246);
+		test.done();
 	}
 };
 
