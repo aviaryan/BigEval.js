@@ -30,7 +30,7 @@ exports.testBasics = {
 		test.done();
 	},
   
-  testErrorData1: function(test){
+ 	testErrorData1: function(test){
 		try {
 			Math.round(this.b.execute("5 * FN(1"));
 			throw new Error('Should have thrown an error');
