@@ -25,6 +25,11 @@ exports.testBasics = {
 		test.done();
 	},
 
+	testExp: function(test){
+		test.equals(this.b.exec("1e1 + 1e+2 + 1e-3"), 110.001);
+ 		test.done();
+	},
+
 	testConstProvider: function(test){
 		this.b.constProvider = function (name) {
 			if (name === 'ABC')

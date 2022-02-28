@@ -273,8 +273,8 @@ BigEval.prototype._parseNumber = function (data, startAt) {
 		c = data[i];
 
 		if (c >= '0' && c <= '9') {
-			if (exp === 1) break;
-			if (exp > 1) exp++;
+			if (exp === 1 || exp === 2)
+				exp = 3;
 		} else if (c === '.') {
 			if (dec || exp > 0) break;
 			dec = true;
