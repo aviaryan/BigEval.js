@@ -110,6 +110,9 @@ var BigEval = function() {
 
 	this.CONSTANT = {};
 	this.FUNCTION = {};
+
+	/** @type function(name:string):any */
+	this.constProvider = null;
 };
 
 BigEval.prototype.DEFAULT_CONSTANTS = {
@@ -192,16 +195,16 @@ BigEval.prototype._lastIndexOfOpArray = function(tokens, cs) {
 		item = cs[i];
 
 		// Is this one a right-associative op?
-		if (this.rightAssociativeOps.hasOwnProperty(item)) {
+		if (hasOwnProperty.call(this.rightAssociativeOps, item)) {
 			p = this._indexOfOpInTokens(tokens, item);
 		} else {
 			p = this._lastIndexOfOpInTokens(tokens, item);
 		}
 
-		if (p == -1)
+		if (p === -1)
 			continue;
 
-		if (l == -1 || p > l) {
+		if (l === -1 || p > l) {
 			l = p;
 			m = item;
 		}
@@ -317,8 +320,8 @@ BigEval.prototype._parseNumber = function (data, startAt) {
 		c = data[i];
 
 		if (c >= '0' && c <= '9') {
-			if (exp === 1) break;
-			if (exp > 1) exp++;
+			if (exp === 1 || exp === 2)
+				exp = 3;
 		} else if (c === '.') {
 			if (dec || exp > 0) break;
 			dec = true;
@@ -640,7 +643,6 @@ BigEval.prototype.compile = function (expression) {
 			tokens.splice(i - 1, 1);
 			i--;
 			len = tokens.length
-			continue;
 		}
 	}
 
@@ -675,6 +677,12 @@ BigEval.prototype._evaluateToken = function (token) {
 			return this.number(value);
 
 		case TokenType.VAR:
+			if (typeof this.constProvider === 'function') {
+				var v = this.constProvider(value);
+				if (v !== undefined && v !== null)
+					return v;
+			}
+
 			if (typeof this.FORCE_CONSTANTS[value.toUpperCase()] !== 'undefined')
 				return this.FORCE_CONSTANTS[value.toUpperCase()];
 
