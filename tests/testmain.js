@@ -27,6 +27,16 @@ exports.testBasics = {
 
 	testExp: function(test){
 		test.equals(this.b.exec("1e1 + 1e+2 + 1e-3"), 110.001);
+ 		test.done();
+	},
+
+	testConstProvider: function(test){
+		this.b.constProvider = function (name) {
+			if (name === 'ABC')
+				return 123;
+		};
+
+		test.equals(Math.round(this.b.exec("ABC * 2")), 246);
 		test.done();
 	}
 };
