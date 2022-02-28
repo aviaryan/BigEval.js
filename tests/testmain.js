@@ -29,8 +29,8 @@ exports.testBasics = {
 		test.equals(this.b.exec("2*5!+3"), 243);
 		test.done();
 	},
-  
- 	testErrorData1: function(test){
+
+	testErrorData1: function(test){
 		try {
 			Math.round(this.b.execute("5 * FN(1"));
 			throw new Error('Should have thrown an error');
@@ -67,7 +67,7 @@ exports.testBasics = {
 
 	testExp: function(test){
 		test.equals(this.b.exec("1e1 + 1e+2 + 1e-3"), 110.001);
- 		test.done();
+		test.done();
 	},
 
 	testConstProvider: function(test){
