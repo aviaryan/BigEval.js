@@ -25,6 +25,11 @@ exports.testBasics = {
 		test.done();
 	},
 
+	testEnclosedNegative: function(test){
+		test.equals(Math.round(this.b.exec("(-5)+6")), 1);
+		test.done();
+	},
+
 	testErrorData1: function(test){
 		try {
 			Math.round(this.b.execute("5 * FN(1"));
