@@ -559,7 +559,7 @@ BigEval.prototype._buildTree = function (tokens, parentToken) {
 			}
 
 			if (!left && op === '-') {
-				left = [{ type: TokenType.NUMBER, value: 0, source: expression }];
+				left = [{ type: TokenType.NUMBER, value: 0 }];
 			}
 			else if (!left && op === '+') {
 				return this._buildTree(right);
