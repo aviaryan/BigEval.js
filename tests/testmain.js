@@ -27,6 +27,10 @@ exports.testBasics = {
 
 	testFactorial: function(test){
 		test.equals(this.b.exec("2*5!+3"), 243);
+	},
+	
+	testEnclosedNegative: function(test){
+		test.equals(Math.round(this.b.exec("(-5)+6")), 1);
 		test.done();
 	},
 
