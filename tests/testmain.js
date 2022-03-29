@@ -25,6 +25,11 @@ exports.testBasics = {
 		test.done();
 	},
 
+	testFactorial: function(test){
+		test.equals(this.b.exec("2*5!+3"), 243);
+		test.done();
+	},
+
 	testEnclosedNegative: function(test){
 		test.equals(Math.round(this.b.exec("(-5)+6")), 1);
 		test.done();
@@ -67,7 +72,7 @@ exports.testBasics = {
 
 	testExp: function(test){
 		test.equals(this.b.exec("1e1 + 1e+2 + 1e-3"), 110.001);
- 		test.done();
+		test.done();
 	},
 
 	testConstProvider: function(test){
