@@ -110,6 +110,7 @@ var BigEval = function() {
 
 	this.CONSTANT = {};
 	this.FUNCTION = {};
+	this.fallbackToGlobalFunctions = false;
 
 	/** @type function(name:string):any */
 	this.constProvider = null;
@@ -802,7 +803,7 @@ BigEval.prototype._evaluateFunction = function (token) {
 	else if (typeof(Math[fname]) == 'function') {
 		return Math[fname].apply(Math, args);
 	}
-	else if (typeof(root[fname]) == 'function') {
+	else if (this.fallbackToGlobalFunctions && typeof(root[fname]) == 'function') {
 		return root[fname].apply(root, args);
 	}
 

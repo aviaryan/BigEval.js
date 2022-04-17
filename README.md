@@ -65,7 +65,8 @@ The operators currently supported in order of precedence are -
 
 ### Functions
 
-BigEval supports functions like sin(), cos() ... When a function is used in an expression, BigEval first looks into its methods to see if such a function exist, then it looks into the JavaScript's **Math** library and in the end it looks into window's global namespace for the function.
+BigEval supports functions like sin(), cos() ... When a function is used in an expression, BigEval first looks into its methods to see if such a function exist, then it looks into the JavaScript's **Math** library.  
+If you want it to fallback into the global namespace (i.e window) when it cannot find a function, you should set `bigEval.fallbackToGlobalFunctions = true;`.  
 Please note that we use just `sin()` and not `Math.sin()` in expressions. Attaching a new function to BigEval is easy.
 ```javascript
 var Obj = new BigEval();
