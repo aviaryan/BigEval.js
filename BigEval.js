@@ -631,10 +631,11 @@ BigEval.prototype.compile = function (expression) {
 			continue;
 		}
 
+		// When we have something like this: "5*-1", we will move the "-" to be part of the number token.
 		if (token.type === TokenType.NUMBER &&
 			prevToken.type === TokenType.OP &&
 			(prevToken.value === '-' || prevToken.value === '+') &&
-			((i > 1 && tokens[i - 2].type === TokenType.OP) || i === 1)
+			((i > 1 && tokens[i - 2].type === TokenType.OP && this.suffixOps.indexOf(tokens[i - 2].value) === -1) || i === 1)
 			) {
 
 			if (prevToken.value === '-') {
