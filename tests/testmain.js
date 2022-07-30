@@ -75,6 +75,60 @@ exports.testBasics = {
 		test.done();
 	},
 
+	testFuncRound: function(test){
+		this.b.FUNCTION["FN"] = (arg) => arg * 2;
+		test.equals(this.b.exec("fn(1.57)"), 1.57 * 2);
+		test.done();
+	},
+
+	testFuncRoundUpper: function(test){
+		this.b.FUNCTION["FN"] = (arg) => arg * 2;
+		test.equals(this.b.exec("FN(1.57)"), 1.57 * 2);
+		test.done();
+	},
+
+	testMathRound: function(test){
+		test.equals(this.b.exec("round(1.57)"), Math.round(1.57));
+		test.done();
+	},
+
+	testMathRoundUpper: function(test){
+		test.equals(this.b.exec("ROUND(1.57)"), Math.round(1.57));
+		test.done();
+	},
+
+	testConst: function(test){
+		this.b.CONSTANT["ABC"] = 123;
+		test.equals(this.b.exec("ABC * 2"), 123 * 2);
+		test.done();
+	},
+
+	testConstLower: function(test){
+		this.b.CONSTANT["ABC"] = 123;
+		test.equals(this.b.exec("abc * 2"), 123 * 2);
+		test.done();
+	},
+
+	testForceConst: function(test){
+		test.ok(!isFinite(this.b.exec("INFINITY")));
+		test.done();
+	},
+
+	testForceConstLower: function(test){
+		test.ok(!isFinite(this.b.exec("infinity")));
+		test.done();
+	},
+
+	testDefaultConst: function(test){
+		test.equals(this.b.exec("PI"), Math.PI);
+		test.done();
+	},
+
+	testDefaultConstLower: function(test){
+		test.equals(this.b.exec("pi"), Math.PI);
+		test.done();
+	},
+
 	testConstProvider: function(test){
 		this.b.constProvider = function (name) {
 			if (name === 'ABC')

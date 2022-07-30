@@ -685,11 +685,20 @@ BigEval.prototype._evaluateToken = function (token) {
 					return v;
 			}
 
+			if (typeof this.FORCE_CONSTANTS[value] !== 'undefined')
+				return this.FORCE_CONSTANTS[value];
+
 			if (typeof this.FORCE_CONSTANTS[value.toUpperCase()] !== 'undefined')
 				return this.FORCE_CONSTANTS[value.toUpperCase()];
 
 			if (typeof this.CONSTANT[value] !== 'undefined')
 				return this.CONSTANT[value];
+
+			if (typeof this.CONSTANT[value.toUpperCase()] !== 'undefined')
+				return this.CONSTANT[value.toUpperCase()];
+
+			if (typeof this.DEFAULT_CONSTANTS[value] !== 'undefined')
+				return this.DEFAULT_CONSTANTS[value];
 
 			if (typeof this.DEFAULT_CONSTANTS[value.toUpperCase()] !== 'undefined')
 				return this.DEFAULT_CONSTANTS[value.toUpperCase()];
@@ -794,17 +803,24 @@ BigEval.prototype._evaluateFunction = function (token) {
 		}
 	}
 
-	if (typeof(this.FUNCTION[fname]) === 'function') {
-		return this.FUNCTION[fname].apply(this.FUNCTION[fname], args);
+	let func = this.FUNCTION[fname];
+	let ctx = null;
+
+	if (typeof(func) !== 'function')
+		func = this.FUNCTION[fname.toUpperCase()];
+
+	if (typeof(func) !== 'function') {
+		func = Math[fname.toLowerCase()];
+		ctx = Math;
 	}
-	else if (typeof(this[fname]) === 'function') {
-		return this[fname].apply(this, args);
+
+	if (typeof(func) !== 'function' && this.fallbackToGlobalFunctions) {
+		func = root[fname];
+		ctx = root;
 	}
-	else if (typeof(Math[fname]) == 'function') {
-		return Math[fname].apply(Math, args);
-	}
-	else if (this.fallbackToGlobalFunctions && typeof(root[fname]) == 'function') {
-		return root[fname].apply(root, args);
+
+	if (typeof(func) === 'function') {
+		return func.apply(ctx, args);
 	}
 
 	throw enrichError(new ReferenceError('Function named "' + fname + '" was not found'), token.source, token.pos, token.end);
