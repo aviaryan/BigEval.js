@@ -681,7 +681,7 @@ BigEval.prototype._evaluateToken = function (token) {
 		case TokenType.VAR:
 			if (typeof this.constProvider === 'function') {
 				var v = this.constProvider(value);
-				if (v !== undefined && v !== null)
+				if (v !== undefined)
 					return v;
 			}
 
