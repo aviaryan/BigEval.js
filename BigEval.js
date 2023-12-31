@@ -457,7 +457,7 @@ BigEval.prototype._tokenizeExpression = function (expression) {
 			continue;
 		}
 
-		throw enrichError(new SyntaxError('Unexpected token at index ' + i), data, i, i + 1);
+		throw enrichError(new SyntaxError('Unexpected token at index ' + i), expression, i, i + 1);
 	}
 
 	return tokens;
